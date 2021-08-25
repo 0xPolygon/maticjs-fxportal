@@ -1,0 +1,40 @@
+{
+  "name": "fx-portal",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "link:maticjs": "npm link @maticnetwork/maticjs",
+    "build": "npm run build:dev",
+    "build:link": "npm run build && npm link",
+    "build:webpack": "npm run lint && webpack --config webpack/webpack.node.config.js",
+    "build:pack": "npm run build:dev && npm pack",
+    "build:dev": "cross-env NODE_ENV=development npm run build:webpack",
+    "build:prod": "cross-env NODE_ENV=production npm run build:webpack",
+    "deploy": "npm run build:dev && npm run build:prod",
+    "prepublishOnly": "npm run deploy",
+    "lint": "tslint src/**/*.ts",
+    "lint:fix": "tslint src/**/*.ts --fix",
+    "test": "npm run build:pack && cd test && npm run install:lib:test",
+    "debug": "npm run build:pack && cd test && npm run install:lib:debug"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maticnetwork/fx-portal.js.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/maticnetwork/fx-portal.js/issues"
+  },
+  "homepage": "https://github.com/maticnetwork/fx-portal.js#readme",
+  "devDependencies": {
+    "@maticnetwork/maticjs": "^2.0.45",
+    "ts-loader": "^7.0.1",
+    "tslint": "^6.1.3",
+    "typescript": "^3.8.3",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^4.2.0",
+    "webpack-merge": "^4.2.2"
+  }
+}
