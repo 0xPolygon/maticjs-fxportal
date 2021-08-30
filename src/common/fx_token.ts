@@ -1,7 +1,5 @@
 import { BaseToken, RootChainManager, IContractInitParam, Web3SideChainClient, ExitManager } from "@maticnetwork/maticjs";
 
-
-
 export class FxPortalToken extends BaseToken {
 
     private predicateAddress: string;
