@@ -9,17 +9,31 @@ export class FxPortalClient {
     exitManager: ExitManager;
     rootChainManager: RootChainManager;
 
+    private config_: IFxPortalClientConfig;
+
     constructor(config: IFxPortalClientConfig) {
+        this.config_ = config;
+    }
+
+    async init() {
+        const config = this.config_;
         const mainPOSContracts = this.client_.mainPOSContracts;
+        const mainFxPortalContracts = this.client_.metaNetwork.Main.FxPortalContracts;
+        const childFxPortalContracts = this.client_.metaNetwork.Matic.FxPortalContracts;
 
-        config = Object.assign(
+        Object.assign(
             {
-
+                // rootTunnel: 
+                erc20: {
+                    childTunnel: mainFxPortalContracts.FxERC20RootTunnel,
+                    rootTunnel: childFxPortalContracts.FxERC20ChildTunnel
+                },
                 rootChainManager: mainPOSContracts.RootChainManagerProxy,
                 rootChain: this.client_.mainPlasmaContracts.RootChainProxy
             } as IFxPortalClientConfig,
             config
         );
+
 
         this.client_ = new Web3SideChainClient(config);
 
@@ -34,7 +48,7 @@ export class FxPortalClient {
         );
 
         this.exitManager = new ExitManager(
-            this.client_.child.client,
+            this.client_.child,
             this.rootChain,
             config.requestConcurrency
         );
@@ -52,8 +66,10 @@ export class FxPortalClient {
      */
     erc20(tokenAddress: string, isParent?: boolean) {
         return new ERC20(
-            tokenAddress,
-            isParent,
+            {
+                tokenAddress,
+                isParent,
+            },
             this.client_,
             this.rootChainManager,
             this.exitManager

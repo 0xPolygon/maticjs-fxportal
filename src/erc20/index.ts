@@ -1,19 +1,19 @@
-import { Web3SideChainClient, RootChainManager, ExitManager, ITransactionOption, Converter, TYPE_AMOUNT, MAX_AMOUNT } from "@maticnetwork/maticjs";
+import { Web3SideChainClient, RootChainManager, ExitManager, ITransactionOption, Converter, TYPE_AMOUNT, MAX_AMOUNT, BaseContract } from "@maticnetwork/maticjs";
 import { FxPortalToken } from "../common";
-import { ERC20RootTunnel } from "./root_tunnel";
 import { LOG_EVENT_SIGNATURE } from "../enums";
+import { IFxPortalClientConfig } from "../interfaces";
+
 
 export class ERC20 extends FxPortalToken {
 
-    rootTunnelAddress: string;
-
-    rootTunnel = new ERC20RootTunnel(
-        this.client.parent.client, "", ""
-    )
+    private rootTunnel_: BaseContract;
+    private childTunnel_: BaseContract;
 
     constructor(
-        tokenAddress: string,
-        isParent: boolean,
+        {
+            tokenAddress,
+            isParent
+        },
         client: Web3SideChainClient,
         rootChainManager: RootChainManager,
         exitManager: ExitManager
@@ -23,6 +23,30 @@ export class ERC20 extends FxPortalToken {
             tokenAddress,
             abi: client.getABI('ChildERC20', 'pos')
         }, client, rootChainManager, exitManager);
+    }
+
+    get rootTunnel() {
+        if (!this.rootTunnel_) {
+            this.rootTunnel_ = this.client.parent.getContract(
+                (this.client.config as IFxPortalClientConfig).erc20.rootTunnel,
+                this.client.getABI("fx-portal", "FxERC20RootTunnel")
+            );
+        }
+        return this.rootTunnel_;
+    }
+
+    get childTunnel() {
+        if (!this.childTunnel_) {
+            this.childTunnel_ = this.client.child.getContract(
+                (this.client.config as IFxPortalClientConfig).erc20.childTunnel,
+                this.client.getABI("fx-portal", "FxERC20ChildTunnel")
+            );
+        }
+        return this.rootTunnel_;
+    }
+
+    get rootTunnelAddress() {
+        return this.rootTunnel_.address;
     }
 
     getBalance(userAddress: string, option?: ITransactionOption) {
@@ -64,7 +88,7 @@ export class ERC20 extends FxPortalToken {
     }
 
     deposit(amount: TYPE_AMOUNT, userAddress: string, option?: ITransactionOption) {
-        const contract = this.rootTunnel.contract;
+        const contract = this.rootTunnel;
 
         const method = contract.method(
             "deposit",
@@ -76,7 +100,7 @@ export class ERC20 extends FxPortalToken {
     }
 
     mapChild(option?: ITransactionOption) {
-        const contract = this.rootTunnel.contract;
+        const contract = this.rootTunnel;
         const method = contract.method(
             "mapToken",
             this.contractParam.tokenAddress
@@ -85,7 +109,7 @@ export class ERC20 extends FxPortalToken {
     }
 
     withdrawStart(amount: TYPE_AMOUNT, option?: ITransactionOption) {
-        const contract = this.contract;
+        const contract = this.childTunnel;
         const method = contract.method(
             "withdraw",
             this.contractParam.tokenAddress,
