@@ -29,7 +29,7 @@ export class ERC20 extends FxPortalToken {
         if (!this.rootTunnel_) {
             this.rootTunnel_ = this.client.parent.getContract(
                 (this.client.config as IFxPortalClientConfig).erc20.rootTunnel,
-                this.client.getABI("fx-portal", "FxERC20RootTunnel")
+                this.client.getABI("FxERC20RootTunnel", "fx-portal")
             );
         }
         return this.rootTunnel_;
@@ -39,7 +39,7 @@ export class ERC20 extends FxPortalToken {
         if (!this.childTunnel_) {
             this.childTunnel_ = this.client.child.getContract(
                 (this.client.config as IFxPortalClientConfig).erc20.childTunnel,
-                this.client.getABI("fx-portal", "FxERC20ChildTunnel")
+                this.client.getABI("FxERC20ChildTunnel", "fx-portal")
             );
         }
         return this.rootTunnel_;
@@ -60,6 +60,7 @@ export class ERC20 extends FxPortalToken {
 
     approve(amount: TYPE_AMOUNT, option?: ITransactionOption) {
         const contract = this.contract;
+        const rootTunnelcontract = this.rootTunnel;
 
         const method = contract.method(
             "approve",

@@ -23,6 +23,7 @@ export class FxPortalClient {
         const childFxPortalContracts = this.client_.metaNetwork.Matic.FxPortalContracts;
 
         Object.assign(
+            config,
             {
                 // rootTunnel: 
                 erc20: {
@@ -31,8 +32,7 @@ export class FxPortalClient {
                 },
                 rootChainManager: mainPOSContracts.RootChainManagerProxy,
                 rootChain: this.client_.mainPlasmaContracts.RootChainProxy
-            } as IFxPortalClientConfig,
-            config
+            } as IFxPortalClientConfig
         );
 
 
