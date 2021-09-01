@@ -2,8 +2,10 @@
   "name": "fx-portal",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/npm.export.js",
+  "types": "dist/ts/index.d.ts",
   "scripts": {
+    "install:matic": "npm i ../matic.js/maticnetwork-maticjs-2.0.45.tgz",
     "link:maticjs": "npm link @maticnetwork/maticjs",
     "build": "npm run build:dev",
     "build:link": "npm run build && npm link",
@@ -28,8 +30,9 @@
     "url": "https://github.com/maticnetwork/fx-portal.js/issues"
   },
   "homepage": "https://github.com/maticnetwork/fx-portal.js#readme",
+  "dependencies": {},
   "devDependencies": {
-    "@maticnetwork/maticjs": "^2.0.45",
+    "@maticnetwork/maticjs": "file:../matic.js/maticnetwork-maticjs-2.0.45.tgz",
     "copy-webpack-plugin": "^6.1.1",
     "ts-loader": "^7.0.1",
     "tslint": "^6.1.3",

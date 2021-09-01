@@ -1,0 +1,23 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "debug.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "link:lib": "npm link fx-portal",
+    "install:lib": "npm i ../fx-portal-1.0.0.tgz",
+    "install:matic": "npm i ../../matic.js/maticnetwork-maticjs-2.0.45.tgz",
+    "debug": "node debug.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@maticnetwork/maticjs": "file:../../matic.js/maticnetwork-maticjs-2.0.45.tgz",
+    "@truffle/hdwallet-provider": "^1.5.0",
+    "cross-env": "^7.0.3"
+  },
+  "dependencies": {
+    "fx-portal": "file:../fx-portal-1.0.0.tgz"
+  }
+}

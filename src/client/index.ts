@@ -17,6 +17,7 @@ export class FxPortalClient {
 
     async init() {
         const config = this.config_;
+        this.client_ = new Web3SideChainClient(config);
         const mainPOSContracts = this.client_.mainPOSContracts;
         const mainFxPortalContracts = this.client_.metaNetwork.Main.FxPortalContracts;
         const childFxPortalContracts = this.client_.metaNetwork.Matic.FxPortalContracts;
@@ -35,7 +36,6 @@ export class FxPortalClient {
         );
 
 
-        this.client_ = new Web3SideChainClient(config);
 
         this.rootChainManager = new RootChainManager(
             this.client_,

@@ -18,7 +18,7 @@ exports.default = {
         filename: `${libraryName}.umd${isProd ? '.min' : ''}.js`,
         library: libraryName,
         libraryTarget: 'umd',
-        libraryExport: 'default',
+        // libraryExport: 'default',
         umdNamedDefine: true,
     },
     module: {
@@ -37,6 +37,7 @@ exports.default = {
         'bn.js': 'bn.js',
         axios: 'axios',
         '@maticnetwork/meta/network': '@maticnetwork/meta/network',
+        '@maticnetwork/maticjs': '@maticnetwork/maticjs',
         'ethereumjs-tx': 'ethereumjs-tx',
         'ethereumjs-util': 'ethereumjs-util',
         'merkle-patricia-tree': 'merkle-patricia-tree',
