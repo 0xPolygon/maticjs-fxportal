@@ -34,13 +34,17 @@ const execute = async () => {
     await matic.init();
 
     const rootTokenErc20 = matic.erc20(goerliERC20, true);
+    const mumbaiTokenErc20 = matic.erc20(mumbaiERC20);
 
-    const result = await rootTokenErc20.approve(10000, {
-        // nonce: 2786
+    // const result = await rootTokenErc20.mapChild();
+    const result = await mumbaiTokenErc20.withdrawStart(100, {
+        // nonce: 1978
     });
+    // console.log("result", result, typeof result);
 
     console.log("txHash", await result.getTransactionHash());
     console.log("receipt", await result.getReceipt());
+
     // const balanceRoot = await rootTokenErc20.getBalance(user1.address)
     // console.log('balanceRoot', balanceRoot);
 }

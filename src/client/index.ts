@@ -77,12 +77,12 @@ export class FxPortalClient {
     }
 
     /**
-    * check whether a txHash is checkPointed 
-    *
-    * @param {string} txHash
-    * @returns
-    * @memberof POSClient
-    */
+     * check whether a txHash is checkPointed
+     *
+     * @param {string} txHash
+     * @returns
+     * @memberof FxPortalClient
+     */
     isCheckPointed(txHash: string) {
         return this.exitManager.isCheckPointed(
             txHash

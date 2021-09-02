@@ -42,7 +42,7 @@ export class ERC20 extends FxPortalToken {
                 this.client.getABI("FxERC20ChildTunnel", "fx-portal")
             );
         }
-        return this.rootTunnel_;
+        return this.childTunnel_;
     }
 
     get rootTunnelAddress() {
@@ -79,13 +79,14 @@ export class ERC20 extends FxPortalToken {
 
     getAllowance(userAddress: string, option?: ITransactionOption) {
         const contract = this.contract;
-
+        // call rootTunnel
+        this.rootTunnel;
         const method = contract.method(
             "allowance",
             userAddress,
             this.rootTunnelAddress
         );
-        return this.processRead<number>(method, option);
+        return this.processRead<string>(method, option);
     }
 
     deposit(amount: TYPE_AMOUNT, userAddress: string, option?: ITransactionOption) {
@@ -95,11 +96,19 @@ export class ERC20 extends FxPortalToken {
             "deposit",
             this.contractParam.tokenAddress,
             userAddress,
-            Converter.toUint256(amount)
+            Converter.toUint256(amount),
+            "0x"
         );
         return this.processWrite(method, option);
     }
 
+    /**
+     *  deploy the corresponding child token and map it to the root token
+     *
+     * @param {ITransactionOption} [option]
+     * @returns
+     * @memberof ERC20
+     */
     mapChild(option?: ITransactionOption) {
         const contract = this.rootTunnel;
         const method = contract.method(
