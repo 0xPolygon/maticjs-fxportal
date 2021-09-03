@@ -142,9 +142,9 @@ export class ERC20 extends FxPortalToken {
             LOG_EVENT_SIGNATURE.Erc20Transfer,
             false
         ).then(payload => {
-            return this.rootChainManager.exit(
-                payload, option
-            );
+            const contract = this.rootTunnel;
+            const method = contract.method("receiveMessage", payload)
+            return this.processWrite(method, option);
         });
     }
 
@@ -164,9 +164,9 @@ export class ERC20 extends FxPortalToken {
             LOG_EVENT_SIGNATURE.Erc20Transfer,
             true
         ).then(payload => {
-            return this.rootChainManager.exit(
-                payload, option
-            );
+            const contract = this.rootTunnel;
+            const method = contract.method("receiveMessage", payload)
+            return this.processWrite(method, option);
         });
     }
 

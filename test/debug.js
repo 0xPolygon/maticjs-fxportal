@@ -17,6 +17,7 @@ const execute = async () => {
     const mumbaiERC20 = fx_portal.child.erc20;
     const goerliERC20 = fx_portal.parent.erc20;
     const rootRPC = process.env.ROOT_RPC || rpc.parent;
+    const maticRPC = process.env.MATIC_RPC || rpc.child;
     const matic = new FxPortalClient({
         network: 'testnet',
         version: 'mumbai',
@@ -27,7 +28,7 @@ const execute = async () => {
             }
         },
         child: {
-            provider: new HDWalletProvider(privateKey, rpc.child),
+            provider: new HDWalletProvider(privateKey, maticRPC),
             defaultConfig: {
                 from
             }
@@ -40,34 +41,23 @@ const execute = async () => {
     const mumbaiTokenErc20 = matic.erc20(mumbaiERC20);
 
     // const result = await rootTokenErc20.mapChild();
-    const nonce = await mumbaiTokenErc20.client.child.getTransactionCount(from);
-    console.log("nonce", nonce);
-    const result = await mumbaiTokenErc20.withdrawStart(10, {
-        nonce: nonce,
-        gasPrice: '900000000000',
+    // const nonce = await mumbaiTokenErc20.client.child.getTransactionCount(from);
+    // console.log("nonce", nonce);
+    const result = await rootTokenErc20.withdrawExitFaster('0x60774f02753bedb63376550329fb415f1de63c41f9ba0445f53ee544c7b3d9a2', {
+        // nonce: nonce,
+        // gasPrice: '900000000000',
         // returnTransaction: true
     });
-    console.log("result", result, typeof result);
-    // const Web3 = require('web3');
-    // const web3 = new Web3(
-    //     new HDWalletProvider(privateKey, rpc.child)
-    // )
-    // const tx = web3.eth.sendTransaction(result);
-    // tx.on("error", (err) => {
-    //     console.error("err", err);
-    // }).on('transactionHash', (hash) => {
-    //     console.log("hash", hash);
-    // })
-    // const result =  mumbaiTokenErc20.client.child.write(result);
+    // console.log("result", result, typeof result);
     const txHash = await result.getTransactionHash();
     console.log("txHash", txHash);
     console.log("receipt", await result.getReceipt());
 
-    // const isCheckpointed = await matic.isCheckPointed('0xedfbd285bfae7637960a149fb00fbc54545edc9b85cef9ba6d05311369bbc2dd');
+    // const isCheckpointed = await matic.isCheckPointed('0x60774f02753bedb63376550329fb415f1de63c41f9ba0445f53ee544c7b3d9a2');
     // console.log("isCheckpointed", isCheckpointed);
 
-    // const balanceRoot = await mumbaiTokenErc20.getBalance(from)
-    // console.log('balanceRoot', balanceRoot);
+    const balanceRoot = await mumbaiTokenErc20.getBalance(from)
+    console.log('balanceRoot', balanceRoot);
 }
 
 execute().then(_ => {
