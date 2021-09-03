@@ -6,19 +6,22 @@ const HDWalletProvider = require("@truffle/hdwallet-provider");
 const { user1, rpc, fx_portal } = require("./config");
 const { FxPortalPlugin, FxPortalClient } = require("fx-portal");
 
+const dotenv = require('dotenv');
+dotenv.config();
+
 use(FxPortalPlugin);
-const from = user1.address;
+const from = process.env.FROM || user1.address;
 
 const execute = async () => {
-    const privateKey = user1.privateKey;
+    const privateKey = process.env.PRIVATE_KEY || user1.privateKey;
     const mumbaiERC20 = fx_portal.child.erc20;
     const goerliERC20 = fx_portal.parent.erc20;
-
+    const rootRPC = process.env.ROOT_RPC || rpc.parent;
     const matic = new FxPortalClient({
         network: 'testnet',
         version: 'mumbai',
         parent: {
-            provider: new HDWalletProvider(privateKey, rpc.parent),
+            provider: new HDWalletProvider(privateKey, rootRPC),
             defaultConfig: {
                 from
             }
@@ -37,10 +40,10 @@ const execute = async () => {
     const mumbaiTokenErc20 = matic.erc20(mumbaiERC20);
 
     // const result = await rootTokenErc20.mapChild();
-    const result = await mumbaiTokenErc20.withdrawStart(100, {
+    const result = await rootTokenErc20.deposit(100, from, {
         // nonce: 1978
     });
-    // console.log("result", result, typeof result);
+    console.log("result", result, typeof result);
 
     console.log("txHash", await result.getTransactionHash());
     console.log("receipt", await result.getReceipt());

@@ -1,4 +1,4 @@
 node_modules
 dist
 *.tgz
-test/config.js
+.env

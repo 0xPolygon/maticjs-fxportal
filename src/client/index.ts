@@ -27,15 +27,15 @@ export class FxPortalClient {
             {
                 // rootTunnel: 
                 erc20: {
-                    childTunnel: mainFxPortalContracts.FxERC20RootTunnel,
-                    rootTunnel: childFxPortalContracts.FxERC20ChildTunnel
+                    rootTunnel: mainFxPortalContracts.FxERC20RootTunnel,
+                    childTunnel: childFxPortalContracts.FxERC20ChildTunnel
                 },
                 rootChainManager: mainPOSContracts.RootChainManagerProxy,
                 rootChain: this.client_.mainPlasmaContracts.RootChainProxy
             } as IFxPortalClientConfig
         );
 
-
+        console.log("erc20", config);
 
         this.rootChainManager = new RootChainManager(
             this.client_,

@@ -2,7 +2,7 @@
 module.exports = {
     rpc: {
         parent: '',
-        child: '', // This is the MATIC testnet RPC
+        child: 'https://rpc-mumbai.matic.today', // This is the MATIC testnet RPC
     },
     fx_portal: {
         parent: {
