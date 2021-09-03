@@ -40,7 +40,7 @@ const execute = async () => {
     const mumbaiTokenErc20 = matic.erc20(mumbaiERC20);
 
     // const result = await rootTokenErc20.mapChild();
-    const result = await rootTokenErc20.deposit(100, from, {
+    const result = await rootTokenErc20.withdrawStart(10, from, {
         // nonce: 1978
     });
     console.log("result", result, typeof result);
@@ -48,7 +48,7 @@ const execute = async () => {
     console.log("txHash", await result.getTransactionHash());
     console.log("receipt", await result.getReceipt());
 
-    // const balanceRoot = await rootTokenErc20.getBalance(user1.address)
+    // const balanceRoot = await rootTokenErc20.getBalance(from)
     // console.log('balanceRoot', balanceRoot);
 }
 

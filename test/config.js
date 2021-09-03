@@ -6,7 +6,8 @@ module.exports = {
     },
     fx_portal: {
         parent: {
-            erc20: '0xe9c7873f81c815d64c71c2233462cb175e4765b3',
+            // erc20: '0xe9c7873f81c815d64c71c2233462cb175e4765b3',
+            erc20: '0x655f2166b0709cd575202630952d71e2bb0d61af',
         },
         child: {
             erc20: '0xDDE69724AeFBdb084413719fE745aB66e3b055C7',
