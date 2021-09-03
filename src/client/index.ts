@@ -35,8 +35,6 @@ export class FxPortalClient {
             } as IFxPortalClientConfig
         );
 
-        console.log("erc20", config);
-
         this.rootChainManager = new RootChainManager(
             this.client_,
             config.rootChainManager,

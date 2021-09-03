@@ -118,6 +118,14 @@ export class ERC20 extends FxPortalToken {
         return this.processWrite(method, option);
     }
 
+    /**
+     * start withdraw process by burning required amount
+     *
+     * @param {TYPE_AMOUNT} amount
+     * @param {ITransactionOption} [option]
+     * @returns
+     * @memberof ERC20
+     */
     withdrawStart(amount: TYPE_AMOUNT, option?: ITransactionOption) {
         const contract = this.childTunnel;
         const method = contract.method(

@@ -5,7 +5,8 @@
   "main": "dist/npm.export.js",
   "types": "dist/ts/index.d.ts",
   "scripts": {
-    "install:matic": "npm i ../matic.js/maticnetwork-maticjs-2.0.45.tgz",
+    "un:matic": "npm un @maticnetwork/maticjs",
+    "install:matic": "npm i ../matic.js/maticnetwork-maticjs-2.0.45.tgz -D",
     "link:maticjs": "npm link @maticnetwork/maticjs",
     "build": "npm run build:dev",
     "build:link": "npm run build && npm link",

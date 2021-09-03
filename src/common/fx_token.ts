@@ -12,20 +12,4 @@ export class FxPortalToken extends BaseToken {
     ) {
         super(contractParam, client);
     }
-
-    async getPredicateAddress() {
-        if (this.predicateAddress) {
-            return this.predicateAddress;
-        }
-        const tokenType = await this.rootChainManager.method("tokenToType", this.contractParam.tokenAddress).read();
-        if (!tokenType) {
-            throw new Error('Invalid Token Type');
-        }
-        const predicateAddress = await this.rootChainManager.method
-            (
-                "typeToPredicate", tokenType
-            ).read<string>();
-        this.predicateAddress = predicateAddress;
-        return predicateAddress;
-    }
 }
