@@ -41,23 +41,22 @@ const execute = async () => {
     const mumbaiTokenErc20 = matic.erc20(mumbaiERC20);
 
     // const result = await rootTokenErc20.mapChild();
-    // const nonce = await mumbaiTokenErc20.client.child.getTransactionCount(from);
-    // console.log("nonce", nonce);
-    const result = await rootTokenErc20.withdrawExitFaster('0x60774f02753bedb63376550329fb415f1de63c41f9ba0445f53ee544c7b3d9a2', {
-        // nonce: nonce,
-        // gasPrice: '900000000000',
-        // returnTransaction: true
-    });
-    // console.log("result", result, typeof result);
-    const txHash = await result.getTransactionHash();
-    console.log("txHash", txHash);
-    console.log("receipt", await result.getReceipt());
+    // const result = await mumbaiTokenErc20.withdrawStart(10);
+    //  const txHash = await result.getTransactionHash();
+    // console.log("txHash", txHash);
+    // console.log("receipt", await result.getReceipt());
 
-    // const isCheckpointed = await matic.isCheckPointed('0x60774f02753bedb63376550329fb415f1de63c41f9ba0445f53ee544c7b3d9a2');
-    // console.log("isCheckpointed", isCheckpointed);
+    // const result = await rootTokenErc20.withdrawExit('0xbb9051c6a55ad82122835dd6b656f62f2bf905452e844172f9d8ba6a98137f8c');
+    // // console.log("result", result, typeof result);
+    // const txHash = await result.getTransactionHash();
+    // console.log("txHash", txHash);
+    // console.log("receipt", await result.getReceipt());
 
-    const balanceRoot = await mumbaiTokenErc20.getBalance(from)
-    console.log('balanceRoot', balanceRoot);
+    const isCheckpointed = await mumbaiTokenErc20.isWithdrawExited('0xbb9051c6a55ad82122835dd6b656f62f2bf905452e844172f9d8ba6a98137f8c');
+    console.log("isWithdrawExited", isCheckpointed);
+
+    // const balanceRoot = await mumbaiTokenErc20.getBalance(from)
+    // console.log('balanceRoot', balanceRoot);
 }
 
 execute().then(_ => {

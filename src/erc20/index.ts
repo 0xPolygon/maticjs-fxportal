@@ -1,4 +1,4 @@
-import { Web3SideChainClient, RootChainManager, ExitManager, ITransactionOption, Converter, TYPE_AMOUNT, MAX_AMOUNT, BaseContract } from "@maticnetwork/maticjs";
+import { Web3SideChainClient, ERROR_TYPE, RootChainManager, ExitManager, ITransactionOption, Converter, TYPE_AMOUNT, MAX_AMOUNT, BaseContract } from "@maticnetwork/maticjs";
 import { FxPortalToken } from "../common";
 import { LOG_EVENT_SIGNATURE } from "../enums";
 import { IFxPortalClientConfig } from "../interfaces";
@@ -49,6 +49,14 @@ export class ERC20 extends FxPortalToken {
         return this.rootTunnel_.address;
     }
 
+    /**
+     * get balance by user address
+     *
+     * @param {string} userAddress
+     * @param {ITransactionOption} [option]
+     * @returns
+     * @memberof ERC20
+     */
     getBalance(userAddress: string, option?: ITransactionOption) {
         const contract = this.contract;
         const method = contract.method(
@@ -58,7 +66,19 @@ export class ERC20 extends FxPortalToken {
         return this.processRead<string>(method, option);
     }
 
+    /**
+     * approve required amount
+     *
+     * @param {TYPE_AMOUNT} amount
+     * @param {ITransactionOption} [option]
+     * @returns
+     * @memberof ERC20
+     */
     approve(amount: TYPE_AMOUNT, option?: ITransactionOption) {
+        if (!this.contractParam.isParent) {
+            this.client.logger.error(ERROR_TYPE.AllowedOnRoot, "approve").throw();
+        }
+
         const contract = this.contract;
         const rootTunnelcontract = this.rootTunnel;
 
@@ -70,6 +90,13 @@ export class ERC20 extends FxPortalToken {
         return this.processWrite(method, option);
     }
 
+    /**
+     * approve max amount
+     *
+     * @param {ITransactionOption} [option]
+     * @returns
+     * @memberof ERC20
+     */
     approveMax(option?: ITransactionOption) {
         return this.approve(
             MAX_AMOUNT
@@ -77,7 +104,19 @@ export class ERC20 extends FxPortalToken {
         )
     }
 
+    /**
+     * get allowance 
+     *
+     * @param {string} userAddress
+     * @param {ITransactionOption} [option]
+     * @returns
+     * @memberof ERC20
+     */
     getAllowance(userAddress: string, option?: ITransactionOption) {
+        if (!this.contractParam.isParent) {
+            this.client.logger.error(ERROR_TYPE.AllowedOnRoot, "getAllowance").throw();
+        }
+
         const contract = this.contract;
         // call rootTunnel
         this.rootTunnel;
@@ -89,7 +128,20 @@ export class ERC20 extends FxPortalToken {
         return this.processRead<string>(method, option);
     }
 
+    /**
+     * deposit required amount from ethereum to polygon
+     *
+     * @param {TYPE_AMOUNT} amount
+     * @param {string} userAddress
+     * @param {ITransactionOption} [option]
+     * @returns
+     * @memberof ERC20
+     */
     deposit(amount: TYPE_AMOUNT, userAddress: string, option?: ITransactionOption) {
+        if (!this.contractParam.isParent) {
+            this.client.logger.error(ERROR_TYPE.AllowedOnRoot, "deposit").throw();
+        }
+
         const contract = this.rootTunnel;
 
         const method = contract.method(
@@ -110,6 +162,10 @@ export class ERC20 extends FxPortalToken {
      * @memberof ERC20
      */
     mapChild(option?: ITransactionOption) {
+        if (!this.contractParam.isParent) {
+            this.client.logger.error(ERROR_TYPE.AllowedOnRoot, "mapChild").throw();
+        }
+
         const contract = this.rootTunnel;
         const method = contract.method(
             "mapToken",
@@ -127,6 +183,10 @@ export class ERC20 extends FxPortalToken {
      * @memberof ERC20
      */
     withdrawStart(amount: TYPE_AMOUNT, option?: ITransactionOption) {
+        if (this.contractParam.isParent) {
+            this.client.logger.error(ERROR_TYPE.AllowedOnChild, "withdrawStart").throw();
+        }
+
         const contract = this.childTunnel;
         const method = contract.method(
             "withdraw",
@@ -136,7 +196,19 @@ export class ERC20 extends FxPortalToken {
         return this.processWrite(method, option);
     }
 
+    /**
+     * complete withdraw process after checkpoint has been submitted for the block containing burn tx.
+     *
+     * @param {string} burnTransactionHash
+     * @param {ITransactionOption} [option]
+     * @returns
+     * @memberof ERC20
+     */
     withdrawExit(burnTransactionHash: string, option?: ITransactionOption) {
+        if (!this.contractParam.isParent) {
+            this.client.logger.error(ERROR_TYPE.AllowedOnRoot, "withdrawExit").throw();
+        }
+
         return this.exitManager.buildPayloadForExit(
             burnTransactionHash,
             LOG_EVENT_SIGNATURE.Erc20Transfer,
@@ -159,6 +231,10 @@ export class ERC20 extends FxPortalToken {
      * @memberof ERC20
      */
     withdrawExitFaster(burnTransactionHash: string, option?: ITransactionOption) {
+        if (!this.contractParam.isParent) {
+            this.client.logger.error(ERROR_TYPE.AllowedOnRoot, "withdrawExit").throw();
+        }
+
         return this.exitManager.buildPayloadForExit(
             burnTransactionHash,
             LOG_EVENT_SIGNATURE.Erc20Transfer,
@@ -178,16 +254,16 @@ export class ERC20 extends FxPortalToken {
      * @returns
      * @memberof ERC20
      */
-    isExited(txHash: string) {
+    isWithdrawExited(txHash: string) {
         if (!txHash) {
             throw new Error(`txHash not provided`);
         }
         return this.exitManager.getExitHash(
             txHash, LOG_EVENT_SIGNATURE.Erc20Transfer
         ).then(exitHash => {
-            return this.rootChainManager.isExitProcessed(
-                exitHash
-            );
+            this.rootTunnel;
+            const method = this.rootTunnel.method("processedExits", exitHash)
+            return this.processRead<boolean>(method);
         });
     }
 

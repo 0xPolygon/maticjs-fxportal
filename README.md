@@ -118,7 +118,7 @@ const txHash = await result.getTransactionHash();
 const receipt = await result.getReceipt();
 ```
 
-## isExited
+## isWithdrawExited
 
 check if withdrawExit has been completed or not
 
