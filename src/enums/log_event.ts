@@ -1,0 +1,3 @@
+export enum LOG_EVENT_SIGNATURE {
+    Erc20Transfer = "0x8c5261668696ce22758910d05bab8f186d6eb247ceac2af2e82c7dc17669b036"
+}

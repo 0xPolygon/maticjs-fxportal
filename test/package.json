@@ -1,0 +1,24 @@
+{
+  "name": "test",
+  "version": "1.0.0",
+  "description": "",
+  "main": "debug.js",
+  "scripts": {
+    "un:matic": "npm un @maticnetwork/maticjs",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "link:lib": "npm link fx-portal",
+    "install:matic": "npm i ../../matic.js/maticnetwork-maticjs-2.0.45.tgz",
+    "debug": "node debug.js",
+    "un:lib": "npm un fx-portal",
+    "install:lib": "node install_lib.js",
+    "install:lib:test": "npm run install:lib && npm run test",
+    "install:lib:debug": "npm run install:lib && npm run debug"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@truffle/hdwallet-provider": "^1.5.0",
+    "cross-env": "^7.0.3"
+  },
+  "dependencies": {}
+}
