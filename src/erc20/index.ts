@@ -1,4 +1,4 @@
-import { Web3SideChainClient, ERROR_TYPE, RootChainManager, ExitManager, ITransactionOption, Converter, TYPE_AMOUNT, MAX_AMOUNT, BaseContract } from "@maticnetwork/maticjs";
+import { Web3SideChainClient, ERROR_TYPE, ExitManager, ITransactionOption, Converter, TYPE_AMOUNT, MAX_AMOUNT, BaseContract } from "@maticnetwork/maticjs";
 import { FxPortalToken } from "../common";
 import { LOG_EVENT_SIGNATURE } from "../enums";
 import { IFxPortalClientConfig } from "../interfaces";
@@ -15,14 +15,13 @@ export class ERC20 extends FxPortalToken {
             isParent
         },
         client: Web3SideChainClient,
-        rootChainManager: RootChainManager,
         exitManager: ExitManager
     ) {
         super({
             isParent,
             tokenAddress,
             abi: client.getABI('ChildERC20', 'pos')
-        }, client, rootChainManager, exitManager);
+        }, client, exitManager);
     }
 
     get rootTunnel() {

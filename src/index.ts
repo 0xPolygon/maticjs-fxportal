@@ -2,14 +2,13 @@ export * from "./plugin";
 
 import { ERC20 } from "./erc20";
 import { IFxPortalClientConfig } from "./interfaces";
-import { Web3SideChainClient, initService, ExitManager, RootChain, RootChainManager } from "@maticnetwork/maticjs";
+import { Web3SideChainClient, initService, ExitManager, RootChain } from "@maticnetwork/maticjs";
 
 export class FxPortalClient {
     rootChain: RootChain;
     private client_: Web3SideChainClient;
 
     exitManager: ExitManager;
-    rootChainManager: RootChainManager;
 
     private config_: IFxPortalClientConfig;
 
@@ -32,14 +31,8 @@ export class FxPortalClient {
                     rootTunnel: mainFxPortalContracts.FxERC20RootTunnel,
                     childTunnel: childFxPortalContracts.FxERC20ChildTunnel
                 },
-                rootChainManager: mainPOSContracts.RootChainManagerProxy,
                 rootChain: this.client_.mainPlasmaContracts.RootChainProxy
             } as IFxPortalClientConfig
-        );
-
-        this.rootChainManager = new RootChainManager(
-            this.client_,
-            config.rootChainManager,
         );
 
         this.rootChain = new RootChain(
@@ -57,6 +50,7 @@ export class FxPortalClient {
 
         initService(this.client_.metaNetwork.Matic.NetworkAPI);
 
+        return this;
     }
 
     /**
@@ -74,7 +68,6 @@ export class FxPortalClient {
                 isParent,
             },
             this.client_,
-            this.rootChainManager,
             this.exitManager
         );
     }

@@ -7,7 +7,7 @@ Library for interacting with fx-portal bridge.
 # Installation
 
 ```
-npm i @maticnetwork/fx-portal.js
+npm i @maticnetwork/fx-portal
 ```
 
 # DOCS
@@ -16,8 +16,8 @@ npm i @maticnetwork/fx-portal.js
 
 ```
 const { use } = require("@maticnetwork/maticjs");
-const HDWalletProvider = require("@truffle/hdwallet-provider");
-const { FxPortalPlugin, FxPortalClient } = require("fx-portal");
+const { FxPortalPlugin, FxPortalClient } = require("@maticnetwork/fx-portal");
+
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 
 // add FxPortal Plugin into maticjs
@@ -46,7 +46,7 @@ await fxPortalClient.init();
 
 ## ERC20
 
-method `erc20` allows you to interact with erc20 token.
+Method `erc20` allows you to interact with erc20 token.
 
 ```
 const erc20 = fxPortalClient.erc20(<tokenAddress>, <isRoot>);
@@ -54,11 +54,15 @@ const erc20 = fxPortalClient.erc20(<tokenAddress>, <isRoot>);
 
 ### getBalance
 
+Get balance of a user by supplying user address
+
 ```
 const balance = await erc20.getBalance(<user address>);
 ```
 
 ### approve
+
+Approve required amount for depositing to polygon chain
 
 ```
 const approveResult = await erc20.approve(<amount>);
@@ -68,6 +72,8 @@ const receipt = await approveResult.getReceipt();
 
 ## approveMax
 
+Approve max amount for depositing to polygon chain
+
 ```
 const approveResult = await erc20.approveMax();
 const txHash = await approveResult.getTransactionHash();
@@ -76,11 +82,15 @@ const receipt = await approveResult.getReceipt();
 
 ### getAllowance
 
+Get approve amount of a user by supplying user address
+
 ```
 const balance = await erc20.getAllowance(<user address>);
 ```
 
 ## deposit
+
+Deposit required amount from ethereum to polygon
 
 ```
 const result = await erc20.deposit(<amount>);
@@ -90,7 +100,7 @@ const receipt = await result.getReceipt();
 
 ## withdrawStart
 
-initiate withdraw process by burning the required amount. 
+Initiate withdraw process by burning the required amount. 
 
 ```
 const result = await erc20.withdrawStart(<amount>);
@@ -108,7 +118,7 @@ await fxPortalClient.isCheckPointed(<tx hash>);
 
 ## withdrawExit
 
-exit withdraw process by providng txHash received in `withdrawStart` process.
+Exit withdraw process by providng txHash received in `withdrawStart` process.
 
 **Note:-** `withdrawExit` can be called after checkpoint has been submitted for `withdrawStart`.
 
@@ -120,17 +130,17 @@ const receipt = await result.getReceipt();
 
 ## isWithdrawExited
 
-check if withdrawExit has been completed or not
+Check if withdraw process has been completed by supplying burn transaction hash.
 
 ```
-const balance = await erc20.isExited(<tx hash>);
+const balance = await erc20.isExited(<burn tx hash>);
 ```
 
 ## withdrawExitFaster
 
-faster exit withdraw process by providng txHash received in `withdrawStart` process.
+Faster exit withdraw process by providng txHash received in `withdrawStart` process.
 
-It uses the api to create the proof, that is why its faster.
+> It is faster because it uses api to create the proof.
 
 ```
 const result = await erc20.withdrawExitFaster(<burn tx hash>);
