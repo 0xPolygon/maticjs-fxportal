@@ -1,7 +1,7 @@
 const path = require('path')
 const copyPlugin = require('copy-webpack-plugin')
 
-const libraryName = 'matic'
+const libraryName = 'matic-fx-portal'
 exports.libraryName = libraryName;
 let mode = process.env.NODE_ENV
 const isProd = mode === 'production'

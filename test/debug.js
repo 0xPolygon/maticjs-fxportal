@@ -4,7 +4,7 @@ const { use, BaseToken } = require("@maticnetwork/maticjs");
 
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 const { user1, rpc, fx_portal } = require("./config");
-const { FxPortalPlugin, FxPortalClient } = require("fx-portal");
+const { FxPortalPlugin, FxPortalClient } = require("@maticnetwork/fx-portal");
 
 const dotenv = require('dotenv');
 dotenv.config();
