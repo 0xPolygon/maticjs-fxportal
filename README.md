@@ -93,7 +93,7 @@ const balance = await erc20.getAllowance(<user address>);
 Deposit required amount from ethereum to polygon
 
 ```
-const result = await erc20.deposit(<amount>);
+const result = await erc20.deposit(<amount>, <user address>);
 const txHash = await result.getTransactionHash();
 const receipt = await result.getReceipt();
 ```
