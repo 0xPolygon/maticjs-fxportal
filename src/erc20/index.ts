@@ -1,13 +1,9 @@
-import { Web3SideChainClient, ERROR_TYPE, ExitManager, ITransactionOption, Converter, TYPE_AMOUNT, MAX_AMOUNT, BaseContract } from "@maticnetwork/maticjs";
+import { Web3SideChainClient, ERROR_TYPE, ITransactionOption, Converter, TYPE_AMOUNT, MAX_AMOUNT, BaseContract } from "@maticnetwork/maticjs";
 import { FxPortalToken } from "../common";
 import { LOG_EVENT_SIGNATURE } from "../enums";
-import { IFxPortalClientConfig } from "../interfaces";
-
+import { IFxPortalClientConfig, IFxPortalContracts } from "../interfaces";
 
 export class ERC20 extends FxPortalToken {
-
-    private rootTunnel_: BaseContract;
-    private childTunnel_: BaseContract;
 
     constructor(
         {
@@ -15,37 +11,14 @@ export class ERC20 extends FxPortalToken {
             isParent
         },
         client: Web3SideChainClient,
-        exitManager: ExitManager
+        contracts: IFxPortalContracts
     ) {
         super({
             isParent,
-            tokenAddress,
-            abi: client.getABI('ChildERC20', 'pos')
-        }, client, exitManager);
-    }
-
-    get rootTunnel() {
-        if (!this.rootTunnel_) {
-            this.rootTunnel_ = this.client.parent.getContract(
-                (this.client.config as IFxPortalClientConfig).erc20.rootTunnel,
-                this.client.getABI("FxERC20RootTunnel", "fx-portal")
-            );
-        }
-        return this.rootTunnel_;
-    }
-
-    get childTunnel() {
-        if (!this.childTunnel_) {
-            this.childTunnel_ = this.client.child.getContract(
-                (this.client.config as IFxPortalClientConfig).erc20.childTunnel,
-                this.client.getABI("FxERC20ChildTunnel", "fx-portal")
-            );
-        }
-        return this.childTunnel_;
-    }
-
-    get rootTunnelAddress() {
-        return this.rootTunnel_.address;
+            address: tokenAddress,
+            name: 'ChildERC20',
+            bridgeType: 'pos'
+        }, client, contracts);
     }
 
     /**
@@ -57,12 +30,13 @@ export class ERC20 extends FxPortalToken {
      * @memberof ERC20
      */
     getBalance(userAddress: string, option?: ITransactionOption) {
-        const contract = this.contract;
-        const method = contract.method(
-            "balanceOf",
-            userAddress
-        );
-        return this.processRead<string>(method, option);
+        return this.getContract().then(contract => {
+            const method = contract.method(
+                "balanceOf",
+                userAddress
+            );
+            return this.processRead<string>(method, option);
+        });
     }
 
     /**
@@ -78,15 +52,14 @@ export class ERC20 extends FxPortalToken {
             this.client.logger.error(ERROR_TYPE.AllowedOnRoot, "approve").throw();
         }
 
-        const contract = this.contract;
-        const rootTunnelcontract = this.rootTunnel;
-
-        const method = contract.method(
-            "approve",
-            this.rootTunnelAddress,
-            Converter.toUint256(amount)
-        );
-        return this.processWrite(method, option);
+        return this.getContract().then(contract => {
+            const method = contract.method(
+                "approve",
+                this.contracts.rootTunnel.address,
+                Converter.toHex(amount)
+            );
+            return this.processWrite(method, option);
+        });
     }
 
     /**
@@ -116,15 +89,14 @@ export class ERC20 extends FxPortalToken {
             this.client.logger.error(ERROR_TYPE.AllowedOnRoot, "getAllowance").throw();
         }
 
-        const contract = this.contract;
-        // call rootTunnel
-        this.rootTunnel;
-        const method = contract.method(
-            "allowance",
-            userAddress,
-            this.rootTunnelAddress
-        );
-        return this.processRead<string>(method, option);
+        return this.getContract().then(contract => {
+            const method = contract.method(
+                "allowance",
+                userAddress,
+                this.contracts.rootTunnel.address
+            );
+            return this.processRead<string>(method, option);
+        });
     }
 
     /**
@@ -141,16 +113,16 @@ export class ERC20 extends FxPortalToken {
             this.client.logger.error(ERROR_TYPE.AllowedOnRoot, "deposit").throw();
         }
 
-        const contract = this.rootTunnel;
-
-        const method = contract.method(
-            "deposit",
-            this.contractParam.tokenAddress,
-            userAddress,
-            Converter.toUint256(amount),
-            "0x"
-        );
-        return this.processWrite(method, option);
+        return this.contracts.rootTunnel.getContract().then(contract => {
+            const method = contract.method(
+                "deposit",
+                this.contractParam.address,
+                userAddress,
+                Converter.toHex(amount),
+                "0x"
+            );
+            return this.processWrite(method, option);
+        });
     }
 
     /**
@@ -165,12 +137,14 @@ export class ERC20 extends FxPortalToken {
             this.client.logger.error(ERROR_TYPE.AllowedOnRoot, "mapChild").throw();
         }
 
-        const contract = this.rootTunnel;
-        const method = contract.method(
-            "mapToken",
-            this.contractParam.tokenAddress
-        )
-        return this.processWrite(method, option);
+        return this.contracts.rootTunnel.getContract().then(contract => {
+            const method = contract.method(
+                "mapToken",
+                this.contractParam.address
+            )
+            return this.processWrite(method, option);
+        });
+
     }
 
     /**
@@ -186,13 +160,34 @@ export class ERC20 extends FxPortalToken {
             this.client.logger.error(ERROR_TYPE.AllowedOnChild, "withdrawStart").throw();
         }
 
-        const contract = this.childTunnel;
-        const method = contract.method(
-            "withdraw",
-            this.contractParam.tokenAddress,
-            Converter.toUint256(amount)
-        );
-        return this.processWrite(method, option);
+        return this.contracts.childTunnel.getContract().then(contract => {
+            const method = contract.method(
+                "withdraw",
+                this.contractParam.address,
+                Converter.toHex(amount)
+            );
+            return this.processWrite(method, option);
+        });
+
+    }
+
+    private withdrawExit_(burnTransactionHash: string, isFast: boolean, option?: ITransactionOption) {
+        if (!this.contractParam.isParent) {
+            this.client.logger.error(ERROR_TYPE.AllowedOnRoot, "withdrawExit").throw();
+        }
+
+        return Promise.all([
+            this.contracts.exitManager.buildPayloadForExit(
+                burnTransactionHash,
+                LOG_EVENT_SIGNATURE.Erc20Transfer,
+                isFast
+            ),
+            this.contracts.rootTunnel.getContract()
+        ]).then(result => {
+            const [payload, contract] = result;
+            const method = contract.method("receiveMessage", payload)
+            return this.processWrite(method, option);
+        });
     }
 
     /**
@@ -204,19 +199,11 @@ export class ERC20 extends FxPortalToken {
      * @memberof ERC20
      */
     withdrawExit(burnTransactionHash: string, option?: ITransactionOption) {
-        if (!this.contractParam.isParent) {
-            this.client.logger.error(ERROR_TYPE.AllowedOnRoot, "withdrawExit").throw();
-        }
-
-        return this.exitManager.buildPayloadForExit(
+        return this.withdrawExit_(
             burnTransactionHash,
-            LOG_EVENT_SIGNATURE.Erc20Transfer,
-            false
-        ).then(payload => {
-            const contract = this.rootTunnel;
-            const method = contract.method("receiveMessage", payload)
-            return this.processWrite(method, option);
-        });
+            false,
+            option
+        )
     }
 
     /**
@@ -230,19 +217,11 @@ export class ERC20 extends FxPortalToken {
      * @memberof ERC20
      */
     withdrawExitFaster(burnTransactionHash: string, option?: ITransactionOption) {
-        if (!this.contractParam.isParent) {
-            this.client.logger.error(ERROR_TYPE.AllowedOnRoot, "withdrawExit").throw();
-        }
-
-        return this.exitManager.buildPayloadForExit(
+        return this.withdrawExit_(
             burnTransactionHash,
-            LOG_EVENT_SIGNATURE.Erc20Transfer,
-            true
-        ).then(payload => {
-            const contract = this.rootTunnel;
-            const method = contract.method("receiveMessage", payload)
-            return this.processWrite(method, option);
-        });
+            true,
+            option
+        )
     }
 
     /**
@@ -257,11 +236,14 @@ export class ERC20 extends FxPortalToken {
         if (!txHash) {
             throw new Error(`txHash not provided`);
         }
-        return this.exitManager.getExitHash(
-            txHash, LOG_EVENT_SIGNATURE.Erc20Transfer
-        ).then(exitHash => {
-            this.rootTunnel;
-            const method = this.rootTunnel.method("processedExits", exitHash)
+        return Promise.all([
+            this.contracts.exitManager.getExitHash(
+                txHash, LOG_EVENT_SIGNATURE.Erc20Transfer
+            ),
+            this.contracts.rootTunnel.getContract()
+        ]).then(result => {
+            const [exitHash, rootTunnel] = result;
+            const method = rootTunnel.method("processedExits", exitHash)
             return this.processRead<boolean>(method);
         });
     }

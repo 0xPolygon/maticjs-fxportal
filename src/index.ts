@@ -1,8 +1,9 @@
 export * from "./plugin";
 
 import { ERC20 } from "./erc20";
-import { IFxPortalClientConfig } from "./interfaces";
-import { Web3SideChainClient, initService, ExitManager, RootChain } from "@maticnetwork/maticjs";
+import { IFxPortalClientConfig, IFxPortalContracts } from "./interfaces";
+import { Web3SideChainClient, ExitManager, RootChain } from "@maticnetwork/maticjs";
+import { ChildTunnel, RootTunnel } from "./contracts";
 
 export class FxPortalClient {
     rootChain: RootChain;
@@ -12,45 +13,59 @@ export class FxPortalClient {
 
     private config_: IFxPortalClientConfig;
 
+    rootTunnel: RootTunnel;
+    childTunnel: ChildTunnel;
+
     constructor(config: IFxPortalClientConfig) {
         this.config_ = config;
+        this.client_ = new Web3SideChainClient(config);
+        this.client_.logger.enableLog(config.log);
     }
 
     async init() {
-        const config = this.config_;
-        this.client_ = new Web3SideChainClient(config);
-        const mainPOSContracts = this.client_.mainPOSContracts;
-        const mainFxPortalContracts = this.client_.metaNetwork.Main.FxPortalContracts;
-        const childFxPortalContracts = this.client_.metaNetwork.Matic.FxPortalContracts;
+        let config = this.config_;
+        const client = this.client_;
 
-        Object.assign(
-            config,
-            {
-                // rootTunnel: 
-                erc20: {
-                    rootTunnel: mainFxPortalContracts.FxERC20RootTunnel,
-                    childTunnel: childFxPortalContracts.FxERC20ChildTunnel
-                },
-                rootChain: this.client_.mainPlasmaContracts.RootChainProxy
-            } as IFxPortalClientConfig
-        );
+        return client.init().then(_ => {
+            const mainFxPortalContracts = client.abiHelper.getAddress("Main.FxPortalContracts");
+            const childFxPortalContracts = client.abiHelper.getAddress("Matic.FxPortalContracts");
 
-        this.rootChain = new RootChain(
-            this.client_,
-            config.rootChain,
-        );
+            config = Object.assign(
+                config,
+                {
+                    // rootTunnel: 
+                    erc20: {
+                        rootTunnel: mainFxPortalContracts.FxERC20RootTunnel,
+                        childTunnel: childFxPortalContracts.FxERC20ChildTunnel
+                    },
+                    rootChain: this.client_.mainPlasmaContracts.RootChainProxy
+                } as IFxPortalClientConfig
+            );
 
-        this.exitManager = new ExitManager(
-            this.client_.child,
-            this.rootChain,
-            config.requestConcurrency
-        );
+            this.rootChain = new RootChain(
+                this.client_,
+                config.rootChain,
+            );
 
-        this.client_.logger.enableLog(config.log);
+            this.exitManager = new ExitManager(
+                this.client_.child,
+                this.rootChain,
+                config.requestConcurrency
+            );
 
-        initService(this.client_.metaNetwork.Matic.NetworkAPI);
+            this.rootTunnel = new RootTunnel(
+                this.client_,
+                config.erc20.rootTunnel,
+            );
 
-        return this;
+            this.childTunnel = new ChildTunnel(
+                this.client_,
+                config.erc20.childTunnel,
+            );
+
+
+            return this;
+        });
     }
 
     /**
@@ -68,7 +83,7 @@ export class FxPortalClient {
                 isParent,
             },
             this.client_,
-            this.exitManager
+            this.getContracts_()
         );
     }
 
@@ -83,5 +98,13 @@ export class FxPortalClient {
         return this.exitManager.isCheckPointed(
             txHash
         );
+    }
+
+    private getContracts_() {
+        return {
+            exitManager: this.exitManager,
+            childTunnel: this.childTunnel,
+            rootTunnel: this.rootTunnel
+        } as IFxPortalContracts;
     }
 }
