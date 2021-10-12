@@ -10,15 +10,36 @@ Library for interacting with fx-portal bridge.
 npm i @maticnetwork/fx-portal
 ```
 
+## Install ethers library
+
+Currently `matic.js` support two ethers library - 
+
+### 1. web3.js
+
+```
+npm i @maticnetwork/maticjs-web3
+```
+
+### 2. Ethers
+
+```
+npm i @maticnetwork/maticjs-ethers
+```
+
 # DOCS
 
 ## Initiate client
 
 ```
 const { use } = require("@maticnetwork/maticjs");
+const { Web3ClientPlugin } = require("@maticnetwork/maticjs-web3");
 const { FxPortalPlugin, FxPortalClient } = require("@maticnetwork/fx-portal");
 
 const HDWalletProvider = require("@truffle/hdwallet-provider");
+
+// add Web3Plugin
+
+use(Web3ClientPlugin);
 
 // add FxPortal Plugin into maticjs
 use(FxPortalPlugin);
