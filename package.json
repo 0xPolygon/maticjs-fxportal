@@ -32,7 +32,7 @@
   },
   "homepage": "https://github.com/maticnetwork/fx-portal.js#readme",
   "dependencies": {
-    "@maticnetwork/maticjs": "^3.0.0-beta.2"
+    "@maticnetwork/maticjs": "^3.0.0-beta.4"
   },
   "devDependencies": {
     "copy-webpack-plugin": "^6.1.1",

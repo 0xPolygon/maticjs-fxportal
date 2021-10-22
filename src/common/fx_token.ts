@@ -1,4 +1,4 @@
-import { BaseToken, RootChainManager, IContractInitParam, Web3SideChainClient, ExitManager } from "@maticnetwork/maticjs";
+import { BaseToken, IContractInitParam, Web3SideChainClient } from "@maticnetwork/maticjs";
 import { IFxPortalContracts } from "../interfaces";
 
 export class FxPortalToken extends BaseToken {

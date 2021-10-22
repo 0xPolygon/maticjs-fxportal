@@ -2,14 +2,14 @@ export * from "./plugin";
 
 import { ERC20 } from "./erc20";
 import { IFxPortalClientConfig, IFxPortalContracts } from "./interfaces";
-import { Web3SideChainClient, ExitManager, RootChain } from "@maticnetwork/maticjs";
+import { Web3SideChainClient, ExitUtil, RootChain } from "@maticnetwork/maticjs";
 import { ChildTunnel, RootTunnel } from "./contracts";
 
 export class FxPortalClient {
     rootChain: RootChain;
     private client_: Web3SideChainClient;
 
-    exitManager: ExitManager;
+    exitManager: ExitUtil;
 
     private config_: IFxPortalClientConfig;
 
@@ -47,7 +47,7 @@ export class FxPortalClient {
                 config.rootChain,
             );
 
-            this.exitManager = new ExitManager(
+            this.exitManager = new ExitUtil(
                 this.client_.child,
                 this.rootChain,
                 config.requestConcurrency

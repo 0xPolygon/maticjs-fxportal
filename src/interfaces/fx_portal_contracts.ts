@@ -1,8 +1,8 @@
-import { ExitManager } from "@maticnetwork/maticjs";
+import { ExitUtil } from "@maticnetwork/maticjs";
 import { RootTunnel } from "../contracts";
 
 export interface IFxPortalContracts {
-    exitManager: ExitManager;
+    exitManager: ExitUtil;
     rootTunnel: RootTunnel;
     childTunnel: RootTunnel;
 }

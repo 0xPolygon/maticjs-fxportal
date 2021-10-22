@@ -1,4 +1,5 @@
 const { use } = require("@maticnetwork/maticjs");
+const maticJs = require("@maticnetwork/maticjs").default
 const { Web3ClientPlugin } = require("@maticnetwork/maticjs-web3");
 
 
@@ -9,8 +10,9 @@ const { FxPortalPlugin, FxPortalClient } = require("@maticnetwork/fx-portal");
 const dotenv = require('dotenv');
 dotenv.config();
 
-use(FxPortalPlugin);
 use(Web3ClientPlugin);
+console.log(maticJs.Web3Client)
+use(FxPortalPlugin);
 const from = process.env.FROM || user1.address;
 
 const execute = async () => {
