@@ -2,12 +2,11 @@ export * from "./plugin";
 
 import { ERC20 } from "./erc20";
 import { IFxPortalClientConfig, IFxPortalContracts } from "./interfaces";
-import { Web3SideChainClient, ExitUtil, RootChain } from "@maticnetwork/maticjs";
+import { Web3SideChainClient, ExitUtil, RootChain, BridgeClient } from "@maticnetwork/maticjs";
 import { ChildTunnel, RootTunnel } from "./contracts";
 
-export class FxPortalClient {
+export class FxPortalClient extends BridgeClient<IFxPortalClientConfig> {
     rootChain: RootChain;
-    private client_: Web3SideChainClient;
 
     exitManager: ExitUtil;
 
@@ -17,18 +16,16 @@ export class FxPortalClient {
     childTunnel: ChildTunnel;
 
     constructor(config: IFxPortalClientConfig) {
-        this.config_ = config;
-        this.client_ = new Web3SideChainClient(config);
-        this.client_.logger.enableLog(config.log);
+        super(config);
     }
 
     async init() {
         let config = this.config_;
-        const client = this.client_;
+        const client = this.client;
 
         return client.init().then(_ => {
-            const mainFxPortalContracts = client.abiHelper.getAddress("Main.FxPortalContracts");
-            const childFxPortalContracts = client.abiHelper.getAddress("Matic.FxPortalContracts");
+            const mainFxPortalContracts = client.abiManager.getConfig("Main.FxPortalContracts");
+            const childFxPortalContracts = client.abiManager.getConfig("Matic.FxPortalContracts");
 
             config = Object.assign(
                 config,
@@ -38,17 +35,18 @@ export class FxPortalClient {
                         rootTunnel: mainFxPortalContracts.FxERC20RootTunnel,
                         childTunnel: childFxPortalContracts.FxERC20ChildTunnel
                     },
-                    rootChain: this.client_.mainPlasmaContracts.RootChainProxy
+                    rootChain: client.mainPlasmaContracts.RootChainProxy
                 } as IFxPortalClientConfig
             );
 
             this.rootChain = new RootChain(
-                this.client_,
+                client,
                 config.rootChain,
             );
 
             this.exitManager = new ExitUtil(
-                this.client_.child,
+                client.config,
+                client.child,
                 this.rootChain,
                 config.requestConcurrency
             );

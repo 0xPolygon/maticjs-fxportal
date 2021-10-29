@@ -31,10 +31,11 @@
     "url": "https://github.com/maticnetwork/fx-portal.js/issues"
   },
   "homepage": "https://github.com/maticnetwork/fx-portal.js#readme",
-  "dependencies": {
-    "@maticnetwork/maticjs": "^3.0.0-beta.4"
+  "peerDependencies": {
+    "@maticnetwork/maticjs": "^3.0.0-beta.7"
   },
   "devDependencies": {
+    "@maticnetwork/maticjs": "^3.0.0-beta.7",
     "copy-webpack-plugin": "^6.1.1",
     "cross-env": "^7.0.3",
     "dotenv": "^10.0.0",
