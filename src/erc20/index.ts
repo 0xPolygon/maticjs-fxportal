@@ -10,7 +10,7 @@ export class ERC20 extends FxPortalToken {
             tokenAddress,
             isParent
         },
-        client: Web3SideChainClient,
+        client: Web3SideChainClient<IFxPortalClientConfig>,
         contracts: IFxPortalContracts
     ) {
         super({

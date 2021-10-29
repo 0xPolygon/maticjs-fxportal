@@ -45,19 +45,17 @@ export class FxPortalClient extends BridgeClient<IFxPortalClientConfig> {
             );
 
             this.exitManager = new ExitUtil(
-                client.config,
-                client.child,
+                client,
                 this.rootChain,
-                config.requestConcurrency
             );
 
             this.rootTunnel = new RootTunnel(
-                this.client_,
+                client,
                 config.erc20.rootTunnel,
             );
 
             this.childTunnel = new ChildTunnel(
-                this.client_,
+                client,
                 config.erc20.childTunnel,
             );
 
@@ -80,7 +78,7 @@ export class FxPortalClient extends BridgeClient<IFxPortalClientConfig> {
                 tokenAddress,
                 isParent,
             },
-            this.client_,
+            this.client,
             this.getContracts_()
         );
     }
