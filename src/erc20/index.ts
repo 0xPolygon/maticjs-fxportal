@@ -11,14 +11,14 @@ export class ERC20 extends FxPortalToken {
             isParent
         },
         client: Web3SideChainClient<IFxPortalClientConfig>,
-        contracts: IFxPortalContracts
+        getHelperContracts: () => IFxPortalContracts
     ) {
         super({
             isParent,
             address: tokenAddress,
-            name: 'ChildERC20',
-            bridgeType: 'pos'
-        }, client, contracts);
+            name: 'FxERC20ChildToken',
+            bridgeType: 'fx-portal'
+        }, client, getHelperContracts);
     }
 
     /**
@@ -39,6 +39,7 @@ export class ERC20 extends FxPortalToken {
         });
     }
 
+
     /**
      * approve required amount
      *
@@ -55,12 +56,22 @@ export class ERC20 extends FxPortalToken {
         return this.getContract().then(contract => {
             const method = contract.method(
                 "approve",
-                this.contracts.rootTunnel.address,
+                this.rootTunnel.address,
                 Converter.toHex(amount)
             );
             return this.processWrite(method, option);
         });
     }
+
+    getMappedChildAddress() {
+        this.checkForRoot("getMappedChildAddress");
+
+        return this.rootTunnel.getContract().then(contract => {
+            const method = contract.method("rootToChildTokens", this.contractParam.address);
+            return this.processRead<string>(method);
+        })
+    }
+
 
     /**
      * approve max amount
@@ -93,7 +104,7 @@ export class ERC20 extends FxPortalToken {
             const method = contract.method(
                 "allowance",
                 userAddress,
-                this.contracts.rootTunnel.address
+                this.rootTunnel.address
             );
             return this.processRead<string>(method, option);
         });
@@ -113,7 +124,7 @@ export class ERC20 extends FxPortalToken {
             this.client.logger.error(ERROR_TYPE.AllowedOnRoot, "deposit").throw();
         }
 
-        return this.contracts.rootTunnel.getContract().then(contract => {
+        return this.rootTunnel.getContract().then(contract => {
             const method = contract.method(
                 "deposit",
                 this.contractParam.address,
@@ -137,7 +148,7 @@ export class ERC20 extends FxPortalToken {
             this.client.logger.error(ERROR_TYPE.AllowedOnRoot, "mapChild").throw();
         }
 
-        return this.contracts.rootTunnel.getContract().then(contract => {
+        return this.rootTunnel.getContract().then(contract => {
             const method = contract.method(
                 "mapToken",
                 this.contractParam.address
@@ -160,7 +171,7 @@ export class ERC20 extends FxPortalToken {
             this.client.logger.error(ERROR_TYPE.AllowedOnChild, "withdrawStart").throw();
         }
 
-        return this.contracts.childTunnel.getContract().then(contract => {
+        return this.getHelperContracts().childTunnel.getContract().then(contract => {
             const method = contract.method(
                 "withdraw",
                 this.contractParam.address,
@@ -177,12 +188,12 @@ export class ERC20 extends FxPortalToken {
         }
 
         return Promise.all([
-            this.contracts.exitManager.buildPayloadForExit(
+            this.exitUtil.buildPayloadForExit(
                 burnTransactionHash,
                 LOG_EVENT_SIGNATURE.Erc20Transfer,
                 isFast
             ),
-            this.contracts.rootTunnel.getContract()
+            this.rootTunnel.getContract()
         ]).then(result => {
             const [payload, contract] = result;
             const method = contract.method("receiveMessage", payload)
@@ -225,27 +236,40 @@ export class ERC20 extends FxPortalToken {
     }
 
     /**
-     *  check if exit has been completed for a transaction hash
+     *  check if exit has been completed for a burn transaction hash
      *  
      *
-     * @param {string} txHash
+     * @param {string} burnTxHash
      * @returns
      * @memberof ERC20
      */
-    isWithdrawExited(txHash: string) {
-        if (!txHash) {
+    isWithdrawExited(burnTxHash: string) {
+        if (!burnTxHash) {
             throw new Error(`txHash not provided`);
         }
         return Promise.all([
-            this.contracts.exitManager.getExitHash(
-                txHash, LOG_EVENT_SIGNATURE.Erc20Transfer
+            this.exitUtil.getExitHash(
+                burnTxHash, LOG_EVENT_SIGNATURE.Erc20Transfer
             ),
-            this.contracts.rootTunnel.getContract()
+            this.rootTunnel.getContract()
         ]).then(result => {
             const [exitHash, rootTunnel] = result;
             const method = rootTunnel.method("processedExits", exitHash)
             return this.processRead<boolean>(method);
         });
+    }
+
+    /**
+     * transfer amount to another user
+     *
+     * @param {TYPE_AMOUNT} amount
+     * @param {string} to
+     * @param {ITransactionOption} [option]
+     * @returns
+     * @memberof ERC20
+     */
+    transfer(amount: TYPE_AMOUNT, to: string, option?: ITransactionOption) {
+        return this.transferERC20(to, amount, option);
     }
 
 }

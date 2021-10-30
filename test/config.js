@@ -1,8 +1,8 @@
 // Testnet V3 config
 module.exports = {
     rpc: {
-        parent: '',
-        child: 'https://rpc-mumbai.matic.today', // This is the MATIC testnet RPC
+        parent: process.env.ROOT_RPC,
+        child: process.env.MATIC_RPC || 'https://rpc-mumbai.matic.today',
     },
     fx_portal: {
         parent: {
@@ -11,14 +11,15 @@ module.exports = {
         },
         child: {
             // erc20: '0xDDE69724AeFBdb084413719fE745aB66e3b055C7',
-            erc20: '0x6E33Df1205d93337f2256b4253CE54CD63e1F7A5',
+            erc20: '0xd155Cc119E2760e065445031046cd841C919283E',
         },
     },
     user1: {
-        "privateKey": "",
-        "address": ""
+        "privateKey": process.env.USER1_PRIVATE_KEY,
+        "address": process.env.USER1_FROM
     },
     user2: {
-        address: '<paste address here>', // Your address
+        address: process.env.USER2_FROM, // Your address
+        "privateKey": process.env.USER2_PRIVATE_KEY,
     },
 }

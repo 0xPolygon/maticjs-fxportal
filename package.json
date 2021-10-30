@@ -1,5 +1,5 @@
 {
-  "name": "@maticnetwork/fx-portal",
+  "name": "@maticnetwork/maticjs-fxportal",
   "version": "1.0.0-beta.1",
   "description": "",
   "main": "dist/npm.export.js",
@@ -23,14 +23,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/maticnetwork/fx-portal.js.git"
+    "url": "git+https://github.com/maticnetwork/maticjs-fxportal.js.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/maticnetwork/fx-portal.js/issues"
+    "url": "https://github.com/maticnetwork/maticjs-fxportal/issues"
   },
-  "homepage": "https://github.com/maticnetwork/fx-portal.js#readme",
+  "homepage": "https://github.com/maticnetwork/maticjs-fxportal#readme",
   "peerDependencies": {
     "@maticnetwork/maticjs": "^3.0.0-beta.8"
   },

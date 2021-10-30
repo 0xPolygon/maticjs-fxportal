@@ -2,15 +2,13 @@ export * from "./plugin";
 
 import { ERC20 } from "./erc20";
 import { IFxPortalClientConfig, IFxPortalContracts } from "./interfaces";
-import { Web3SideChainClient, ExitUtil, RootChain, BridgeClient } from "@maticnetwork/maticjs";
+import { ExitUtil, RootChain, BridgeClient } from "@maticnetwork/maticjs";
 import { ChildTunnel, RootTunnel } from "./contracts";
 
 export class FxPortalClient extends BridgeClient<IFxPortalClientConfig> {
     rootChain: RootChain;
 
-    exitManager: ExitUtil;
-
-    private config_: IFxPortalClientConfig;
+    exitUtil: ExitUtil;
 
     rootTunnel: RootTunnel;
     childTunnel: ChildTunnel;
@@ -20,15 +18,15 @@ export class FxPortalClient extends BridgeClient<IFxPortalClientConfig> {
     }
 
     async init() {
-        let config = this.config_;
         const client = this.client;
+        let config = client.config;
+
 
         return client.init().then(_ => {
             const mainFxPortalContracts = client.abiManager.getConfig("Main.FxPortalContracts");
             const childFxPortalContracts = client.abiManager.getConfig("Matic.FxPortalContracts");
 
             config = Object.assign(
-                config,
                 {
                     // rootTunnel: 
                     erc20: {
@@ -36,7 +34,8 @@ export class FxPortalClient extends BridgeClient<IFxPortalClientConfig> {
                         childTunnel: childFxPortalContracts.FxERC20ChildTunnel
                     },
                     rootChain: client.mainPlasmaContracts.RootChainProxy
-                } as IFxPortalClientConfig
+                } as IFxPortalClientConfig,
+                config
             );
 
             this.rootChain = new RootChain(
@@ -44,7 +43,7 @@ export class FxPortalClient extends BridgeClient<IFxPortalClientConfig> {
                 config.rootChain,
             );
 
-            this.exitManager = new ExitUtil(
+            this.exitUtil = new ExitUtil(
                 client,
                 this.rootChain,
             );
@@ -79,7 +78,7 @@ export class FxPortalClient extends BridgeClient<IFxPortalClientConfig> {
                 isParent,
             },
             this.client,
-            this.getContracts_()
+            this.getContracts_.bind(this)
         );
     }
 
@@ -91,14 +90,14 @@ export class FxPortalClient extends BridgeClient<IFxPortalClientConfig> {
      * @memberof FxPortalClient
      */
     isCheckPointed(txHash: string) {
-        return this.exitManager.isCheckPointed(
+        return this.exitUtil.isCheckPointed(
             txHash
         );
     }
 
     private getContracts_() {
         return {
-            exitManager: this.exitManager,
+            exitUtil: this.exitUtil,
             childTunnel: this.childTunnel,
             rootTunnel: this.rootTunnel
         } as IFxPortalContracts;
