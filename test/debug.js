@@ -46,11 +46,11 @@ const execute = async () => {
     const rootTokenErc20 = matic.erc20(goerliERC20, true);
     const mumbaiTokenErc20 = matic.erc20(mumbaiERC20);
 
-    // return console.log(
-    //     await mumbaiTokenErc20.getBalance(from)
-    // )
+    return console.log(
+        await mumbaiTokenErc20.getBalance(from)
+    )
 
-    const result = await mumbaiTokenErc20.withdrawStart(1000);
+    const result = await rootTokenErc20.deposit(1000000000, from);
     // const result = await rootTokenErc20.mapChild();
     // const result = await mumbaiTokenErc20.withdrawStart(10);
     const txHash = await result.getTransactionHash();
