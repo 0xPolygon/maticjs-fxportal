@@ -5,15 +5,17 @@ const { Web3ClientPlugin } = require("@maticnetwork/maticjs-web3");
 
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 const { user1, rpc, fx_portal } = require("./config");
-const { FxPortalPlugin, FxPortalClient } = require("@maticnetwork/fx-portal");
+const { FxPortalPlugin, FxPortalClient } = require("@maticnetwork/maticjs-fxportal");
 
-const dotenv = require('dotenv');
-dotenv.config();
+// const dotenv = require('dotenv');
+// dotenv.config();
 
 use(Web3ClientPlugin);
 console.log(maticJs.Web3Client)
 use(FxPortalPlugin);
 const from = process.env.FROM || user1.address;
+
+console.log('from', from);
 
 const execute = async () => {
     const privateKey = process.env.PRIVATE_KEY || user1.privateKey;
@@ -22,6 +24,7 @@ const execute = async () => {
     const rootRPC = process.env.ROOT_RPC || rpc.parent;
     const maticRPC = process.env.MATIC_RPC || rpc.child;
     const matic = new FxPortalClient({
+        log: true,
         network: 'testnet',
         version: 'mumbai',
         parent: {
@@ -43,7 +46,11 @@ const execute = async () => {
     const rootTokenErc20 = matic.erc20(goerliERC20, true);
     const mumbaiTokenErc20 = matic.erc20(mumbaiERC20);
 
-    const result = await rootTokenErc20.deposit(10, from);
+    return console.log(
+        await mumbaiTokenErc20.getBalance(from)
+    )
+
+    const result = await rootTokenErc20.deposit(1000000000, from);
     // const result = await rootTokenErc20.mapChild();
     // const result = await mumbaiTokenErc20.withdrawStart(10);
     const txHash = await result.getTransactionHash();
