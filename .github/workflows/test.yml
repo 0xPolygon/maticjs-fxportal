@@ -12,6 +12,12 @@ on:
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
+  
+env:
+    USER1_FROM: ${{ secrets.USER1_FROM }}
+    USER2_FROM: ${{ secrets.USER2_FROM }}
+    USER1_PRIVATE_KEY: ${{ secrets.USER1_PRIVATE_KEY }}
+    USER2_PRIVATE_KEY: ${{ secrets.USER2_PRIVATE_KEY }}
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -19,11 +25,7 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-latest
-    env:
-      USER1_FROM: ${{ secrets.USER1_FROM }}
-      USER2_FROM: ${{ secrets.USER2_FROM }}
-      USER1_PRIVATE_KEY: ${{ secrets.USER1_PRIVATE_KEY }}
-      USER2_PRIVATE_KEY: ${{ secrets.USER2_PRIVATE_KEY }}
+    
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
