@@ -19,6 +19,7 @@
     "lint": "tslint src/**/*.ts",
     "lint:fix": "tslint src/**/*.ts --fix",
     "test": "npm run build:pack && cd test && npm run install:lib:test",
+    "test:ci": "npm run build:pack && cd test && npm run install:lib:test:ci",
     "debug": "npm run build:pack && cd test && npm run install:lib:debug"
   },
   "repository": {
