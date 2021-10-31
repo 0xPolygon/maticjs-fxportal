@@ -7,7 +7,7 @@ export const from = user1.address;
 export const to = user2.address;
 export const toPrivateKey = user2.privateKey;
 
-console.log('from', from);
+console.log('from', from, from.length, privateKey.length);
 
 export const RPC = rpc;
 
