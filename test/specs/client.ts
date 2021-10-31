@@ -18,38 +18,52 @@ export const erc721 = {
     child: fx_portal.child.erc721
 }
 
-export const fxPortalClient = new FxPortalClient({
-    // log: true,
-    network: 'testnet',
-    version: 'mumbai',
-    parent: {
-        provider: new HDWalletProvider(privateKey, rpc.parent),
-        defaultConfig: {
-            from
-        }
-    },
-    child: {
-        provider: new HDWalletProvider(privateKey, rpc.child),
-        defaultConfig: {
-            from
-        }
-    }
-});
+export let fxPortalClient: FxPortalClient;
 
-export const fxPortalClientTo = new FxPortalClient({
-    // log: true,
-    network: 'testnet',
-    version: 'mumbai',
-    parent: {
-        provider: new HDWalletProvider(toPrivateKey, rpc.parent),
-        defaultConfig: {
-            from: to
+try {
+    fxPortalClient = new FxPortalClient({
+        // log: true,
+        network: 'testnet',
+        version: 'mumbai',
+        parent: {
+            provider: new HDWalletProvider(privateKey, rpc.parent),
+            defaultConfig: {
+                from
+            }
+        },
+        child: {
+            provider: new HDWalletProvider(privateKey, rpc.child),
+            defaultConfig: {
+                from
+            }
         }
-    },
-    child: {
-        provider: new HDWalletProvider(toPrivateKey, rpc.child),
-        defaultConfig: {
-            from: to
+    });
+} catch (error) {
+    console.error('error unable to init fxPortalClientFrom', error);
+}
+
+export let fxPortalClientTo: FxPortalClient;
+
+try {
+    fxPortalClientTo = new FxPortalClient({
+        // log: true,
+        network: 'testnet',
+        version: 'mumbai',
+        parent: {
+            provider: new HDWalletProvider(toPrivateKey, rpc.parent),
+            defaultConfig: {
+                from: to
+            }
+        },
+        child: {
+            provider: new HDWalletProvider(toPrivateKey, rpc.child),
+            defaultConfig: {
+                from: to
+            }
         }
-    }
-});
+    });
+} catch (error) {
+    console.error('error unable to init fxPortalClientTo', error);
+}
+
+
