@@ -14,10 +14,12 @@ on:
   workflow_dispatch:
   
 env:
-    USER1_FROM: '${{ secrets.USER1_FROM }}'
+    USER1_FROM: ${{ secrets.USER1_FROM }}
     USER2_FROM: ${{ secrets.USER2_FROM }}
     USER1_PRIVATE_KEY: ${{ secrets.USER1_PRIVATE_KEY }}
     USER2_PRIVATE_KEY: ${{ secrets.USER2_PRIVATE_KEY }}
+    ROOT_RPC: ${{ secrets.ROOT_RPC }}
+    MATIC_RPC: ${{ secrets.MATIC_RPC }}
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
