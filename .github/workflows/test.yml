@@ -14,7 +14,7 @@ on:
   workflow_dispatch:
   
 env:
-    USER1_FROM: ${{ secrets.USER1_FROM }}
+    USER1_FROM: '${{ secrets.USER1_FROM }}'
     USER2_FROM: ${{ secrets.USER2_FROM }}
     USER1_PRIVATE_KEY: ${{ secrets.USER1_PRIVATE_KEY }}
     USER2_PRIVATE_KEY: ${{ secrets.USER2_PRIVATE_KEY }}
