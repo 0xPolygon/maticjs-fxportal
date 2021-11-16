@@ -172,6 +172,7 @@ export class ERC20 extends FxPortalToken {
         }
 
         return this.getHelperContracts().childTunnel.getContract().then(contract => {
+            console.log("contract", contract.address);
             const method = contract.method(
                 "withdraw",
                 this.contractParam.address,

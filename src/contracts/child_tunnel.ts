@@ -6,7 +6,7 @@ export class ChildTunnel extends BaseToken<IFxPortalClientConfig> {
     constructor(client: Web3SideChainClient<IFxPortalClientConfig>, address: string) {
         super(
             {
-                isParent: true,
+                isParent: false,
                 address: address,
                 name: "FxERC20ChildTunnel",
                 bridgeType: 'fx-portal'
