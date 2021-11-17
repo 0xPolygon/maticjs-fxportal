@@ -77,7 +77,7 @@ describe('ERC20', () => {
         expect(result).to.have.not.property('maxPriorityFeePerGas')
         expect(result).to.have.property('gasPrice')
         expect(result['gasPrice']).to.be.an('number').gt(0);
-        expect(result).to.have.property('chainId', '0x13881');
+        expect(result).to.have.property('chainId', 80001);
     });
 
     it('parent transfer returnTransaction with erp1159', async () => {
@@ -91,7 +91,7 @@ describe('ERC20', () => {
         expect(result).to.have.property('maxFeePerGas', 20)
         expect(result).to.have.property('maxPriorityFeePerGas', 20)
         expect(result).to.have.not.property('gasPrice')
-        expect(result).to.have.property('chainId', '0x5');
+        expect(result).to.have.property('chainId', 5);
 
     });
 
@@ -133,24 +133,24 @@ describe('ERC20', () => {
         expect(result['to'].toLowerCase()).equal(value.toLowerCase());
     });
 
-    // it('withdrawExit return tx', async () => {
-    //     const result = await erc20Parent.withdrawExit('0xbb9051c6a55ad82122835dd6b656f62f2bf905452e844172f9d8ba6a98137f8c', {
-    //         returnTransaction: true
-    //     });
+    it('withdrawExit return tx', async () => {
+        const result = await erc20Parent.withdrawExit('0x11412edcf0e24729a97e8e74d3d00745dbe5441078526d115e4f0717ad58e058', {
+            returnTransaction: true
+        });
 
-    //     const rootChainManager = await abiManager.getConfig("Main.POSContracts.RootChainManagerProxy")
-    //     expect(result['to'].toLowerCase()).equal(rootChainManager.toLowerCase());
-    // });
+        const erc20RootTunnel = await abiManager.getConfig("Main.FxPortalContracts.FxERC20RootTunnel")
+        expect(result['to'].toLowerCase()).equal(erc20RootTunnel.toLowerCase());
+    });
 
-    // it('withdrawExitFaster return tx', async () => {
-    //     setProofApi("https://apis.matic.network");
-    //     const result = await erc20Parent.withdrawExitFaster('0xbb9051c6a55ad82122835dd6b656f62f2bf905452e844172f9d8ba6a98137f8c', {
-    //         returnTransaction: true
-    //     });
+    it('withdrawExitFaster return tx', async () => {
+        setProofApi("https://apis.matic.network");
+        const result = await erc20Parent.withdrawExitFaster('0x11412edcf0e24729a97e8e74d3d00745dbe5441078526d115e4f0717ad58e058', {
+            returnTransaction: true
+        });
 
-    //     const rootChainManager = await abiManager.getConfig("Main.POSContracts.RootChainManagerProxy")
-    //     expect(result['to'].toLowerCase()).equal(rootChainManager.toLowerCase());
-    // });
+        const erc20RootTunnel = await abiManager.getConfig("Main.FxPortalContracts.FxERC20RootTunnel")
+        expect(result['to'].toLowerCase()).equal(erc20RootTunnel.toLowerCase());
+    });
 
     it('child transfer', async () => {
         const oldBalance = await erc20Child.getBalance(to);
