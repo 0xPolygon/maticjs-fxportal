@@ -31,7 +31,7 @@ describe('FxPortal Client', () => {
         })
     })
 
-    it('init fxPortal client from', async () => {
+    it('init fxPortal client to', async () => {
         await fxPortalClientTo.init({
             // log: true,
             network: 'testnet',

@@ -1,5 +1,5 @@
-[![TEST](https://github.com/maticnetwork/maticjs-fxportal/actions/workflows/test.yml/badge.svg)](https://github.com/maticnetwork/maticjs-fxportal/actions/workflows/test.yml)
-[![npm version](https://badge.fury.io/js/@maticnetwork%2Fmaticjs-fxportal.svg)](https://badge.fury.io/js/@maticnetwork%2Fmaticjs-fxportal)
+[![TEST](https://github.com/fx-portal/maticjs-fxportal/actions/workflows/test.yml/badge.svg)](https://github.com/fx-portal/maticjs-fxportal/actions/workflows/test.yml)
+[![npm version](https://badge.fury.io/js/@fxportal%2Fmaticjs-fxportal.svg)](https://badge.fury.io/js/@fxportal%2Fmaticjs-fxportal)
 # fx-portal.js
 
 Library for interacting with fx-portal bridge.
@@ -9,7 +9,7 @@ Library for interacting with fx-portal bridge.
 # Installation
 
 ```
-npm i @maticnetwork/maticjs-fxportal
+npm i @fxportal/maticjs-fxportal
 ```
 
 ## Install ethers library
@@ -35,7 +35,7 @@ npm i @maticnetwork/maticjs-ethers
 ```
 const { use } = require("@maticnetwork/maticjs");
 const { Web3ClientPlugin } = require("@maticnetwork/maticjs-web3");
-const { FxPortalClient } = require("@maticnetwork/fx-portal");
+const { FxPortalClient } = require("@fxportal/maticjs-fxportal");
 
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 

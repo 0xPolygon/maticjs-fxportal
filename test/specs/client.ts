@@ -1,4 +1,4 @@
-import { FxPortalClient } from "@maticnetwork/maticjs-fxportal";
+import { FxPortalClient } from "@fxportal/maticjs-fxportal";
 import { user1, rpc, fx_portal, user2 } from "../config";
 
 export const privateKey = user1.privateKey;
