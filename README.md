@@ -1,3 +1,5 @@
+[![TEST](https://github.com/maticnetwork/maticjs-fxportal/actions/workflows/test.yml/badge.svg)](https://github.com/maticnetwork/maticjs-fxportal/actions/workflows/test.yml)
+[![npm version](https://badge.fury.io/js/@maticnetwork%2Fmaticjs-fxportal.svg)](https://badge.fury.io/js/@maticnetwork%2Fmaticjs-fxportal)
 # fx-portal.js
 
 Library for interacting with fx-portal bridge.
@@ -7,7 +9,7 @@ Library for interacting with fx-portal bridge.
 # Installation
 
 ```
-npm i @maticnetwork/fx-portal
+npm i @maticnetwork/maticjs-fxportal
 ```
 
 ## Install ethers library
@@ -33,7 +35,7 @@ npm i @maticnetwork/maticjs-ethers
 ```
 const { use } = require("@maticnetwork/maticjs");
 const { Web3ClientPlugin } = require("@maticnetwork/maticjs-web3");
-const { FxPortalPlugin, FxPortalClient } = require("@maticnetwork/fx-portal");
+const { FxPortalClient } = require("@maticnetwork/fx-portal");
 
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 
@@ -41,10 +43,9 @@ const HDWalletProvider = require("@truffle/hdwallet-provider");
 
 use(Web3ClientPlugin);
 
-// add FxPortal Plugin into maticjs
-use(FxPortalPlugin);
+const fxPortalClient = new FxPortalClient();
 
-const fxPortalClient = new FxPortalClient({
+await fxPortalClient.init({
     network: 'testnet',
     version: 'mumbai',
     parent: {
@@ -60,8 +61,6 @@ const fxPortalClient = new FxPortalClient({
         }
     }
 });
-
-await fxPortalClient.init();
 
 ```
 
@@ -91,7 +90,7 @@ const txHash = await approveResult.getTransactionHash();
 const receipt = await approveResult.getReceipt();
 ```
 
-## approveMax
+### approveMax
 
 Approve max amount for depositing to polygon chain
 
@@ -109,7 +108,7 @@ Get approve amount of a user by supplying user address
 const balance = await erc20.getAllowance(<user address>);
 ```
 
-## deposit
+### deposit
 
 Deposit required amount from ethereum to polygon
 
@@ -119,12 +118,34 @@ const txHash = await result.getTransactionHash();
 const receipt = await result.getReceipt();
 ```
 
-## withdrawStart
+### withdrawStart
 
 Initiate withdraw process by burning the required amount. 
 
 ```
 const result = await erc20.withdrawStart(<amount>);
+const txHash = await result.getTransactionHash();
+const receipt = await result.getReceipt();
+```
+### withdrawExit
+
+Exit withdraw process by providng txHash received in `withdrawStart` process.
+
+**Note:-** `withdrawExit` can be called after checkpoint has been submitted for `withdrawStart`.
+
+```
+const result = await erc20.withdrawExit(<burn tx hash>);
+const txHash = await result.getTransactionHash();
+const receipt = await result.getReceipt();
+```
+### withdrawExitFaster
+
+Faster exit withdraw process by providng txHash received in `withdrawStart` process.
+
+> It is faster because it uses api to create the proof.
+
+```
+const result = await erc20.withdrawExitFaster(<burn tx hash>);
 const txHash = await result.getTransactionHash();
 const receipt = await result.getReceipt();
 ```
@@ -137,17 +158,6 @@ Check if transaction has been checkpointed or not.
 await fxPortalClient.isCheckPointed(<tx hash>);
 ```
 
-## withdrawExit
-
-Exit withdraw process by providng txHash received in `withdrawStart` process.
-
-**Note:-** `withdrawExit` can be called after checkpoint has been submitted for `withdrawStart`.
-
-```
-const result = await erc20.withdrawExit(<burn tx hash>);
-const txHash = await result.getTransactionHash();
-const receipt = await result.getReceipt();
-```
 
 ## isWithdrawExited
 
@@ -157,15 +167,11 @@ Check if withdraw process has been completed by supplying burn transaction hash.
 const balance = await erc20.isExited(<burn tx hash>);
 ```
 
-## withdrawExitFaster
 
-Faster exit withdraw process by providng txHash received in `withdrawStart` process.
+## isDeposited
 
-> It is faster because it uses api to create the proof.
+Check if deposit is completed.
 
 ```
-const result = await erc20.withdrawExitFaster(<burn tx hash>);
-const txHash = await result.getTransactionHash();
-const receipt = await result.getReceipt();
+const balance = await erc20.isDeposited(<tx hash>);
 ```
-

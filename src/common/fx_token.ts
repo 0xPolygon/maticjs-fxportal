@@ -19,6 +19,4 @@ export class FxPortalToken extends BaseToken<IFxPortalClientConfig> {
     protected get exitUtil() {
         return this.getHelperContracts().exitUtil;
     }
-
-
 }

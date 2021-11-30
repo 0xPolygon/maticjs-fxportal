@@ -5,5 +5,5 @@ export interface IFxPortalClientConfig extends IBaseClientConfig {
     erc20?: {
         rootTunnel?: string;
         childTunnel?: string;
-    }
+    };
 }

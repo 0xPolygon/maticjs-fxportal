@@ -1,5 +1,4 @@
 import { FxPortalClient } from "@maticnetwork/maticjs-fxportal";
-import HDWalletProvider from "@truffle/hdwallet-provider";
 import { user1, rpc, fx_portal, user2 } from "../config";
 
 export const privateKey = user1.privateKey;
@@ -7,7 +6,7 @@ export const from = user1.address;
 export const to = user2.address;
 export const toPrivateKey = user2.privateKey;
 
-console.log('from', from, from.length, privateKey.length);
+console.log('from', from, from.length);
 
 export const RPC = rpc;
 
@@ -20,52 +19,9 @@ export const erc721 = {
     child: fx_portal.child.erc721
 }
 
-export let fxPortalClient: FxPortalClient;
+export const fxPortalClient: FxPortalClient = new FxPortalClient();
 
-try {
-    fxPortalClient = new FxPortalClient({
-        // log: true,
-        network: 'testnet',
-        version: 'mumbai',
-        parent: {
-            provider: new HDWalletProvider(privateKey, rpc.parent),
-            defaultConfig: {
-                from
-            }
-        },
-        child: {
-            provider: new HDWalletProvider(privateKey, rpc.child),
-            defaultConfig: {
-                from
-            }
-        }
-    });
-} catch (error) {
-    console.error('error unable to init fxPortalClientFrom', error);
-}
+export const fxPortalClientTo: FxPortalClient = new FxPortalClient();
 
-export let fxPortalClientTo: FxPortalClient;
-
-try {
-    fxPortalClientTo = new FxPortalClient({
-        // log: true,
-        network: 'testnet',
-        version: 'mumbai',
-        parent: {
-            provider: new HDWalletProvider(toPrivateKey, rpc.parent),
-            defaultConfig: {
-                from: to
-            }
-        },
-        child: {
-            provider: new HDWalletProvider(toPrivateKey, rpc.child),
-            defaultConfig: {
-                from: to
-            }
-        }
-    });
-} catch (error) {
-    console.error('error unable to init fxPortalClientTo', error);
-}
 
 

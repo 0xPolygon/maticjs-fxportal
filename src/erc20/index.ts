@@ -69,7 +69,7 @@ export class ERC20 extends FxPortalToken {
         return this.rootTunnel.getContract().then(contract => {
             const method = contract.method("rootToChildTokens", this.contractParam.address);
             return this.processRead<string>(method);
-        })
+        });
     }
 
 
@@ -84,7 +84,7 @@ export class ERC20 extends FxPortalToken {
         return this.approve(
             MAX_AMOUNT
             , option
-        )
+        );
     }
 
     /**
@@ -152,7 +152,7 @@ export class ERC20 extends FxPortalToken {
             const method = contract.method(
                 "mapToken",
                 this.contractParam.address
-            )
+            );
             return this.processWrite(method, option);
         });
 
@@ -197,7 +197,7 @@ export class ERC20 extends FxPortalToken {
             this.rootTunnel.getContract()
         ]).then(result => {
             const [payload, contract] = result;
-            const method = contract.method("receiveMessage", payload)
+            const method = contract.method("receiveMessage", payload);
             return this.processWrite(method, option);
         });
     }
@@ -215,7 +215,7 @@ export class ERC20 extends FxPortalToken {
             burnTransactionHash,
             false,
             option
-        )
+        );
     }
 
     /**
@@ -233,7 +233,7 @@ export class ERC20 extends FxPortalToken {
             burnTransactionHash,
             true,
             option
-        )
+        );
     }
 
     /**
@@ -255,7 +255,7 @@ export class ERC20 extends FxPortalToken {
             this.rootTunnel.getContract()
         ]).then(result => {
             const [exitHash, rootTunnel] = result;
-            const method = rootTunnel.method("processedExits", exitHash)
+            const method = rootTunnel.method("processedExits", exitHash);
             return this.processRead<boolean>(method);
         });
     }

@@ -12,7 +12,6 @@ describe('ERC20', () => {
     const abiManager = new ABIManager("testnet", "mumbai");
     before(() => {
         return Promise.all([
-            fxPortalClient.init(),
             abiManager.init()
         ]);
     });
@@ -75,7 +74,7 @@ describe('ERC20', () => {
         });
         expect(result).to.have.not.property('maxFeePerGas')
         expect(result).to.have.not.property('maxPriorityFeePerGas')
-        expect(result).to.have.property('gasPrice')
+        // expect(result).to.have.property('gasPrice')
         expect(result['gasPrice']).to.be.an('number').gt(0);
         expect(result).to.have.property('chainId', 80001);
     });
@@ -95,11 +94,11 @@ describe('ERC20', () => {
 
     });
 
-    // it('isDeposited', async () => {
-    //     const txHash = '0xc67599f5c967f2040786d5924ec55d37bf943c009bdd23f3b50e5ae66efde258';
-    //     const isExited = await posClient.isDeposited(txHash);
-    //     expect(isExited).to.be.an('boolean').equal(true);
-    // })
+    it('isDeposited', async () => {
+        const txHash = '0xba3f7b20b251164bf8ee88c8b9aa3bca6d92bc7042f29a74d70e7fa15c0cec53';
+        const isExited = await fxPortalClient.isDeposited(txHash);
+        expect(isExited).to.be.an('boolean').equal(true);
+    })
 
     it('withdrawstart return tx', async () => {
         const result = await erc20Child.withdrawStart('10', {
@@ -134,7 +133,7 @@ describe('ERC20', () => {
     });
 
     it('withdrawExit return tx', async () => {
-        const result = await erc20Parent.withdrawExit('0x11412edcf0e24729a97e8e74d3d00745dbe5441078526d115e4f0717ad58e058', {
+        const result = await erc20Parent.withdrawExit('0x246c9dad895e51b40ed39b83dad6ab66de8e0f50cf2432a6e64b627bfaa24604', {
             returnTransaction: true
         });
 
@@ -144,7 +143,7 @@ describe('ERC20', () => {
 
     it('withdrawExitFaster return tx', async () => {
         setProofApi("https://apis.matic.network");
-        const result = await erc20Parent.withdrawExitFaster('0x11412edcf0e24729a97e8e74d3d00745dbe5441078526d115e4f0717ad58e058', {
+        const result = await erc20Parent.withdrawExitFaster('0x246c9dad895e51b40ed39b83dad6ab66de8e0f50cf2432a6e64b627bfaa24604', {
             returnTransaction: true
         });
 
@@ -174,7 +173,6 @@ describe('ERC20', () => {
         )
 
         //transfer money back to user
-        await fxPortalClientTo.init();
         const erc20ChildToken = fxPortalClientTo.erc20(erc20.child);
 
         result = await erc20ChildToken.transfer(amount, to);

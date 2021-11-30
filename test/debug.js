@@ -1,18 +1,16 @@
-const { use } = require("@maticnetwork/maticjs");
+const { use, setProofApi } = require("@maticnetwork/maticjs");
 const maticJs = require("@maticnetwork/maticjs").default
 const { Web3ClientPlugin } = require("@maticnetwork/maticjs-web3");
 
 
 const HDWalletProvider = require("@truffle/hdwallet-provider");
 const { user1, rpc, fx_portal } = require("./config");
-const { FxPortalPlugin, FxPortalClient } = require("@maticnetwork/maticjs-fxportal");
+const { FxPortalClient } = require("@maticnetwork/maticjs-fxportal");
 
 // const dotenv = require('dotenv');
 // dotenv.config();
 
 use(Web3ClientPlugin);
-console.log(maticJs.Web3Client)
-use(FxPortalPlugin);
 const from = process.env.FROM || user1.address;
 
 console.log('from', from);
@@ -23,7 +21,9 @@ const execute = async () => {
     const goerliERC20 = fx_portal.parent.erc20;
     const rootRPC = process.env.ROOT_RPC || rpc.parent;
     const maticRPC = process.env.MATIC_RPC || rpc.child;
-    const matic = new FxPortalClient({
+    const matic = new FxPortalClient();
+
+    await matic.init({
         log: true,
         network: 'testnet',
         version: 'mumbai',
@@ -41,20 +41,47 @@ const execute = async () => {
         }
     });
 
-    await matic.init();
-
     const rootTokenErc20 = matic.erc20(goerliERC20, true);
     const mumbaiTokenErc20 = matic.erc20(mumbaiERC20);
+    // setProofApi("https://apis.matic.network");
+    // const result = await rootTokenErc20.withdrawExit('0x11412edcf0e24729a97e8e74d3d00745dbe5441078526d115e4f0717ad58e058', {
+    //     returnTransaction: true
+    // })
+    // const writeTx = matic['client'].parent.write({
+    //     chainId: result.chainId,
+    //     from: result.from,
+    //     nonce: result.nonce,
+    //     data: result.data,
+    //     to: result.to
+    // });
+    // const txHashpromise = new Promise((res) => {
+    //     writeTx.onTransactionHash = (value) => {
+    //         res(value);
+    //     }
+    // })
+    // const txReceiptPromise = new Promise(res => {
+    //     writeTx.onReceipt = (value) => {
+    //         res(value);
+    //     }
+    // })
 
+    // const txHash = await txHashpromise;
+    // const txReceipt = await txReceiptPromise;
+
+    // // console.log(await writeTx.getTransactionHash())
+    // // console.log(await writeTx.getReceipt())
+    // return console.log(
+    //     "exit",
+    // )
     // return console.log(
     //     await mumbaiTokenErc20.getBalance(from)
     // )
-    
+
 
     // const result = await rootTokenErc20.deposit(1000000000, from);
     // const result = await rootTokenErc20.mapChild();
-    // const result = await mumbaiTokenErc20.withdrawStart(10);
-    const result = await rootTokenErc20.withdrawExit('0xfe76bfed39c7de19b62dd8f70feaf830846812bd17661bff22c2fb2344c3cba3');
+    const result = await mumbaiTokenErc20.withdrawStart(10);
+    // const result = await rootTokenErc20.withdrawExit('0xfe76bfed39c7de19b62dd8f70feaf830846812bd17661bff22c2fb2344c3cba3');
     const txHash = await result.getTransactionHash();
     console.log("txHash", txHash);
     console.log("receipt", await result.getReceipt());
