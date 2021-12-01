@@ -21,6 +21,18 @@ export class ERC20 extends FxPortalToken {
         }, client, getHelperContracts);
     }
 
+    getName() {
+        return this.getProperty<string>("name");
+    }
+
+    getDecimals() {
+        return this.getProperty<string>("decimals");
+    }
+
+    getSymbol() {
+        return this.getProperty<string>("symbol");
+    }
+
     /**
      * get balance by user address
      *

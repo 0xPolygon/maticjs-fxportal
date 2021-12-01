@@ -1,10 +1,8 @@
 [![TEST](https://github.com/fx-portal/maticjs-fxportal/actions/workflows/test.yml/badge.svg)](https://github.com/fx-portal/maticjs-fxportal/actions/workflows/test.yml)
 [![npm version](https://badge.fury.io/js/@fxportal%2Fmaticjs-fxportal.svg)](https://badge.fury.io/js/@fxportal%2Fmaticjs-fxportal)
-# fx-portal.js
+# maticjs-fxportal
 
-Library for interacting with fx-portal bridge.
-
-> fx-portal is plugin for maticjs. 
+FxPortal bridge plugin for maticjs. It provides FxPortalClient to interact with fxportal bridge.
 
 # Installation
 
@@ -78,6 +76,27 @@ Get balance of a user by supplying user address
 
 ```
 const balance = await erc20.getBalance(<user address>);
+```
+### getName
+
+Get name of token
+
+```
+const name = await erc20.getName();
+```
+### getDecimals
+
+Get decimals of token
+
+```
+const decimals = await erc20.getDecimals();
+```
+### getSymbol
+
+Get symbol of token
+
+```
+const decimals = await erc20.getSymbol();
 ```
 
 ### approve

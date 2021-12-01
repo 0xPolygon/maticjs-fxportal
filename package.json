@@ -24,14 +24,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/maticnetwork/maticjs-fxportal.js.git"
+    "url": "git+https://github.com/fx-portal/maticjs-fxportal.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/maticnetwork/maticjs-fxportal/issues"
+    "url": "https://github.com/fx-portal/maticjs-fxportal/issues"
   },
-  "homepage": "https://github.com/maticnetwork/maticjs-fxportal#readme",
+  "homepage": "https://github.com/fx-portal/maticjs-fxportal#readme",
   "peerDependencies": {
     "@maticnetwork/maticjs": "^3.0.0"
   },

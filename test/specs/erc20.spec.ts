@@ -16,6 +16,27 @@ describe('ERC20', () => {
         ]);
     });
 
+    it('get name', async () => {
+        const value = await erc20Child.getName();
+        expect(value).to.be.an('string').equal('Dummy ERC20 (FXERC20)');
+    })
+
+    it('get decimals', async () => {
+        const value = await erc20Child.getDecimals();
+        expect(value).to.be.an('string').equal('18');
+    })
+
+    it('get symbol', async () => {
+        const value = await erc20Child.getSymbol();
+        expect(value).to.be.an('string').equal('fxDERC20');
+    })
+
+    it('getMappedChildAddress', async () => {
+        const value = await erc20Parent.getMappedChildAddress();
+        expect(value).to.be.an('string').equal(
+            erc20.child
+        );
+    });
 
     it('get balance child', async () => {
         console.log('from.env.NODE_ENV', from);

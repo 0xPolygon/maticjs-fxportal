@@ -19,4 +19,13 @@ export class FxPortalToken extends BaseToken<IFxPortalClientConfig> {
     protected get exitUtil() {
         return this.getHelperContracts().exitUtil;
     }
+
+    getProperty<T>(property: string) {
+        return this.getContract().then(contract => {
+            const method = contract.method(
+                property
+            );
+            return this.processRead<T>(method);
+        });
+    }
 }
