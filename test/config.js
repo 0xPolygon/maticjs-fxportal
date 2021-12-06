@@ -11,7 +11,8 @@ module.exports = {
         },
         child: {
             // erc20: '0xDDE69724AeFBdb084413719fE745aB66e3b055C7',
-            erc20: '0xd155Cc119E2760e065445031046cd841C919283E',
+            // erc20: '0xd155Cc119E2760e065445031046cd841C919283E',
+            erc20: '0xAc2957AD802962f8C1bC9A2cD3920383e7B0Fcb2',
         },
     },
     user1: {

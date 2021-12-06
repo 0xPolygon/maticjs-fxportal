@@ -133,6 +133,18 @@ describe('ERC20', () => {
 
     });
 
+    it('withdrawTostart return tx', async () => {
+        const result = await erc20Child.withdrawToStart('10', to, {
+            returnTransaction: true
+        });
+
+        const value = await abiManager.getConfig("Matic.FxPortalContracts.FxERC20ChildTunnel")
+
+        expect(result['to'].toLowerCase()).equal(value.toLowerCase());
+        expect(result).to.have.property('data')
+
+    });
+
     it('approve return tx', async () => {
         const result = await erc20Parent.approve('10', {
             returnTransaction: true

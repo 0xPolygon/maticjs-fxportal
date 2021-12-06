@@ -184,7 +184,6 @@ export class ERC20 extends FxPortalToken {
         }
 
         return this.getHelperContracts().childTunnel.getContract().then(contract => {
-            console.log("contract", contract.address);
             const method = contract.method(
                 "withdraw",
                 this.contractParam.address,
@@ -193,6 +192,30 @@ export class ERC20 extends FxPortalToken {
             return this.processWrite(method, option);
         });
 
+    }
+
+    /**
+     * start withdrawTo process by burning required amount
+     *
+     * @param {TYPE_AMOUNT} amount
+     * @param {string} toAddress
+     * @param {ITransactionOption} [option]
+     * @return {*} 
+     * @memberof ERC20
+     */
+    withdrawToStart(amount: TYPE_AMOUNT, toAddress: string, option?: ITransactionOption) {
+        this.checkForChild("withdrawToStart");
+        const childTunnel = this.getHelperContracts().childTunnel;
+        return childTunnel.getContract().then(contract => {
+            console.log("childTunnel address", contract.address);
+            const method = contract.method(
+                "withdrawTo",
+                this.contractParam.address,
+                toAddress,
+                Converter.toHex(amount)
+            );
+            return this.processWrite(method, option);
+        });
     }
 
     private withdrawExit_(burnTransactionHash: string, isFast: boolean, option?: ITransactionOption) {
