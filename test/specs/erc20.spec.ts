@@ -166,7 +166,7 @@ describe('ERC20', () => {
     });
 
     it('withdrawExit return tx', async () => {
-        const result = await erc20Parent.withdrawExit('0x246c9dad895e51b40ed39b83dad6ab66de8e0f50cf2432a6e64b627bfaa24604', {
+        const result = await erc20Parent.withdrawExit('0x54f07b3bcea3846edd26e9383e366f20057ff3171ecc8ec418355095f7fdfd08', {
             returnTransaction: true
         });
 
@@ -176,7 +176,7 @@ describe('ERC20', () => {
 
     it('withdrawExitFaster return tx', async () => {
         setProofApi("https://apis.matic.network");
-        const result = await erc20Parent.withdrawExitFaster('0x246c9dad895e51b40ed39b83dad6ab66de8e0f50cf2432a6e64b627bfaa24604', {
+        const result = await erc20Parent.withdrawExitFaster('0x54f07b3bcea3846edd26e9383e366f20057ff3171ecc8ec418355095f7fdfd08', {
             returnTransaction: true
         });
 

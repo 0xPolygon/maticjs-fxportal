@@ -48,6 +48,7 @@ const execute = async () => {
 
     // return console.log(await rootTokenErc20.getMappedChildAddress());
     // return console.log(await matic.isDeposited('0xa3febaa3bfdd5e8d9fe32ea0107892c9deae3eadcd0eec0fc5d9263f6d039f7f'));
+    return console.log(await matic.isCheckPointed('0x54f07b3bcea3846edd26e9383e366f20057ff3171ecc8ec418355095f7fdfd08'));
 
     // setProofApi("https://apis.matic.network");
     // const result = await rootTokenErc20.withdrawExit('0x11412edcf0e24729a97e8e74d3d00745dbe5441078526d115e4f0717ad58e058', {
