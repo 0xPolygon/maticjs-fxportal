@@ -146,6 +146,15 @@ const result = await erc20.withdrawStart(<amount>);
 const txHash = await result.getTransactionHash();
 const receipt = await result.getReceipt();
 ```
+### withdrawToStart
+
+Initiate withdrawTo process by burning the required amount. 
+
+```
+const result = await erc20.withdrawToStart(<amount>, <to address>);
+const txHash = await result.getTransactionHash();
+const receipt = await result.getReceipt();
+```
 ### withdrawExit
 
 Exit withdraw process by providng txHash received in `withdrawStart` process.

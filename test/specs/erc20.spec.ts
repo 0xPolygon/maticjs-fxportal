@@ -166,7 +166,7 @@ describe('ERC20', () => {
     });
 
     it('withdrawExit return tx', async () => {
-        const result = await erc20Parent.withdrawExit('0x54f07b3bcea3846edd26e9383e366f20057ff3171ecc8ec418355095f7fdfd08', {
+        const result = await erc20Parent.withdrawExit('0xe19f22d80c2a29df04f9298da79f03434121331f5ecd838803567c8120922f4b', {
             returnTransaction: true
         });
 
@@ -176,7 +176,17 @@ describe('ERC20', () => {
 
     it('withdrawExitFaster return tx', async () => {
         setProofApi("https://apis.matic.network");
-        const result = await erc20Parent.withdrawExitFaster('0x54f07b3bcea3846edd26e9383e366f20057ff3171ecc8ec418355095f7fdfd08', {
+        const result = await erc20Parent.withdrawExitFaster('0xe19f22d80c2a29df04f9298da79f03434121331f5ecd838803567c8120922f4b', {
+            returnTransaction: true
+        });
+
+        const erc20RootTunnel = await abiManager.getConfig("Main.FxPortalContracts.FxERC20RootTunnel")
+        expect(result['to'].toLowerCase()).equal(erc20RootTunnel.toLowerCase());
+    });
+
+    it('withdrawExitFaster for withdrawto return tx', async () => {
+        setProofApi("https://apis.matic.network");
+        const result = await erc20Parent.withdrawExitFaster('0x8648d3965129b069637b0eb1ac8b56a4d216fb7c3480eb468ccaa0bf024f3fea', {
             returnTransaction: true
         });
 
