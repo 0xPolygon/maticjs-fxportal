@@ -85,7 +85,7 @@ const execute = async () => {
     // )
 
 
-    // const result = await rootTokenErc20.deposit(1000000000, from);
+    const result = await rootTokenErc20.deposit(1000000000, from);
     // const result = await rootTokenErc20.mapChild();
     const result = await mumbaiTokenErc20.withdrawToStart(1000, to);
     // const result = await rootTokenErc20.withdrawExit('0xfe76bfed39c7de19b62dd8f70feaf830846812bd17661bff22c2fb2344c3cba3');
