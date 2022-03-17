@@ -232,6 +232,7 @@ export class ERC20 extends FxPortalToken {
             this.rootTunnel.getContract()
         ]).then(result => {
             const [payload, contract] = result;
+            console.log("payload",payload);
             const method = contract.method("receiveMessage", payload);
             return this.processWrite(method, option);
         });
