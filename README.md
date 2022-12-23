@@ -192,7 +192,7 @@ await fxPortalClient.isCheckPointed(<tx hash>);
 Check if withdraw process has been completed by supplying burn transaction hash.
 
 ```
-const balance = await erc20.isExited(<burn tx hash>);
+const balance = await erc20.isWithdrawExited(<burn tx hash>);
 ```
 
 

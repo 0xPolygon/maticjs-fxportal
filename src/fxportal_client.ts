@@ -2,6 +2,7 @@ import { ERC20 } from "./erc20";
 import { IFxPortalClientConfig, IFxPortalContracts } from "./interfaces";
 import { ExitUtil, RootChain, BridgeClient } from "@maticnetwork/maticjs";
 import { ChildTunnel, RootTunnel } from "./contracts";
+import { Erc721 } from "./erc721";
 
 export class FxPortalClient extends BridgeClient<IFxPortalClientConfig> {
     rootChain: RootChain;
@@ -68,6 +69,25 @@ export class FxPortalClient extends BridgeClient<IFxPortalClientConfig> {
      */
     erc20(tokenAddress: string, isParent?: boolean) {
         return new ERC20(
+            {
+                tokenAddress,
+                isParent,
+            },
+            this.client,
+            this.getContracts_.bind(this)
+        );
+    }
+
+    /**
+     * get erc721 token instance
+     *
+     * @param {string} tokenAddress
+     * @param {boolean} [isParent]
+     * @return {*} 
+     * @memberof FxPortalClient
+     */
+    erc721(tokenAddress: string, isParent?: boolean) {
+        return new Erc721(
             {
                 tokenAddress,
                 isParent,
